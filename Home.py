@@ -1,20 +1,12 @@
-
 from flask import Flask, render_template, redirect, url_for, session,request,g, request
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user, AnonymousUserMixin
-import sqlalchemy
-from sqlalchemy import *
-
+from db import db
 
 app = Flask(__name__)
-engine = create_engine('sqlite://', echo = True)
-metadata = MetaData()
 app.config['SECRET_KEY'] = "VisiTia"
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-
-users = Table ("users", metadata ,Column ("id", Integer , primary_key = True ) ,Column ("name", String ) ,Column ("pwd", String ))
-metadata.create_all(engine)
 
 
 class User(UserMixin):
@@ -58,7 +50,7 @@ def login():
 	else:
 		return render_template("login.html")
 
-app.route('/private')
+@app.route('/private')
 @login_required
 def private():
 	conn = engine.connect()

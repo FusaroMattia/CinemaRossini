@@ -1,5 +1,21 @@
 import sqlalchemy
-from sqlalchemy import *
+from sqlalchemy import create_engine, metadata , Column
+
+engine = create_engine('sqlite:///rossini.db', echo = True)
+metadata = MetaData()
+users = Table('users', metadata, Column('id',Integer))
+metadata.create_all(engine)
+
+
+
+
+
+
+
+
+
+
+"""
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 
@@ -34,7 +50,4 @@ for x in users:
     print("Username = %s and pwd = %s" % (x.name , x,pwd))
 
 session.close()
-
-
-
-
+"""
