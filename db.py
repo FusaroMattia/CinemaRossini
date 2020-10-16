@@ -6,6 +6,13 @@ engine = create_engine('sqlite:///:memory', echo = True)
 drop_database(engine.url)
 create_database(engine.url)
 metadata = MetaData()
+
+login = Table('login', metadata,Column('cod',Integer, primary_key = True),
+                                Column('username',String , nullable = True ),
+                                Column('email',String , nullable = False ),
+                                Column('pwd',String , nullable = False )
+            )
+
 utenti = Table('utenti', metadata,Column('id',Integer, primary_key = True),
                                 Column('nome',String , nullable = True ),
                                 Column('cognome',String , nullable = False ),
@@ -15,7 +22,7 @@ utenti = Table('utenti', metadata,Column('id',Integer, primary_key = True),
                                 Column('sesso',String, nullable = False ) ,
                                 Column('riduzione',Integer , nullable = False ) ,
                                 Column('gestore',Boolean ) ,
-                                Column('pwd',String , nullable = False )
+                                Column('login',Integer , ForeignKey('login.cod'), nullable = False)
             )
 
 
@@ -114,49 +121,3 @@ conn.execute('INSERT INTO film("CodFilm","titolo","autore","durata","generi","li
 
 
 conn.close()
-
-
-
-
-
-
-
-
-
-
-"""
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
-
-Base = declarative_base()
-
-class User(Base):
-    __tablename__ = "user"
-
-    id = Column("id", Integer , primary_key = True )
-    name = Column ("name", String, unique = True )
-    pwd = Column ("pwd",   String)
-
-engine = create_engine('sqlite:///:memory', echo = True)
-Base.metadata.create_all(bind=engine)
-Session = sessionmaker(bind = engine)
-
-session = Session()
-user = User()
-user.id = 0;
-user.name = "tia"
-user.pwd = "tia"
-
-session.add(user)
-session.commit()
-session.close()
-
-
-session = Session()
-
-users = session.query(User).all()
-for x in users:
-    print("Username = %s and pwd = %s" % (x.name , x,pwd))
-
-session.close()
-"""
