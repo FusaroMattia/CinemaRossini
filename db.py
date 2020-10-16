@@ -2,16 +2,12 @@ import sqlalchemy
 from sqlalchemy import create_engine, MetaData , Column,Table,Integer,String,Boolean,DATE,ForeignKey,TEXT
 from sqlalchemy_utils import create_database, drop_database
 
-engine = create_engine('sqlite:///:memory', echo = True)
+engine = create_engine('sqlite:////mnt/c/Users/Angry442/Desktop/Python/ProgettoBasi/rossini.db', echo = True)
 drop_database(engine.url)
 create_database(engine.url)
 metadata = MetaData()
 
-login = Table('login', metadata,Column('cod',Integer, primary_key = True),
-                                Column('username',String , nullable = True ),
-                                Column('email',String , nullable = False ),
-                                Column('pwd',String , nullable = False )
-            )
+#user = Table('user', metadata,Column('id',Integer, primary_key = True),Column('name',String , nullable = True ),Column('email',String , nullable = False ),Column('password',String , nullable = False ))
 
 utenti = Table('utenti', metadata,Column('id',Integer, primary_key = True),
                                 Column('nome',String , nullable = True ),
@@ -21,8 +17,7 @@ utenti = Table('utenti', metadata,Column('id',Integer, primary_key = True),
                                 Column('data_nascita',DATE , nullable = False ),
                                 Column('sesso',String, nullable = False ) ,
                                 Column('riduzione',Integer , nullable = False ) ,
-                                Column('gestore',Boolean ) ,
-                                Column('login',Integer , ForeignKey('login.cod'), nullable = False)
+                                Column('gestore',Boolean )
             )
 
 
@@ -77,11 +72,13 @@ acquisti = Table('acquisti', metadata,Column('id',Integer, primary_key = True),
 metadata.create_all(engine)
 
 conn = engine.connect()
+
+
 #UTENTI
-conn.execute('INSERT INTO utenti("id","nome","cognome","citta","stato","data_nascita","sesso","riduzione","gestore","pwd") VALUES("1","Mattia","Fusaro","Venezia","Veneto","09/12/1999","M","10","1","elangry442")  ')
-conn.execute('INSERT INTO utenti("id","nome","cognome","citta","stato","data_nascita","sesso","riduzione","gestore","pwd") VALUES("2","Giacomo","Visinoni","Venezia","Veneto","30/04/1999","M","15","1","visi99")  ')
-conn.execute('INSERT INTO utenti("id","nome","cognome","citta","stato","data_nascita","sesso","riduzione","gestore","pwd") VALUES("3","Lorenzo","Oliva","Venezia","Veneto","19/07/1999","M","0","0","oliva")  ')
-conn.execute('INSERT INTO utenti("id","nome","cognome","citta","stato","data_nascita","sesso","riduzione","gestore","pwd") VALUES("4","Anthony","Fusaro","Venezia","Veneto","22/04/1996","M","2","0","fuxy")  ')
+conn.execute('INSERT INTO utenti("id","nome","cognome","citta","stato","data_nascita","sesso","riduzione","gestore") VALUES("1","Mattia","Fusaro","Venezia","Veneto","09/12/1999","M","10","1")  ')
+conn.execute('INSERT INTO utenti("id","nome","cognome","citta","stato","data_nascita","sesso","riduzione","gestore") VALUES("2","Giacomo","Visinoni","Venezia","Veneto","30/04/1999","M","15","1")  ')
+conn.execute('INSERT INTO utenti("id","nome","cognome","citta","stato","data_nascita","sesso","riduzione","gestore") VALUES("3","Lorenzo","Oliva","Venezia","Veneto","19/07/1999","M","0","0")  ')
+conn.execute('INSERT INTO utenti("id","nome","cognome","citta","stato","data_nascita","sesso","riduzione","gestore") VALUES("4","Anthony","Fusaro","Venezia","Veneto","22/04/1996","M","2","0")  ')
 
 #SALE
 conn.execute('INSERT INTO sale("NSala","posti_totali","posti_disabili","prezzo_posti") VALUES("1","100","7","9") ')

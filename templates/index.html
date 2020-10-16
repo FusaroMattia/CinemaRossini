@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %} CINEMA ROSSINI {% endblock %}
+{% block content %}
+<p> QUI ABBIAMO LA LISTA DI FILM IN PROGRAMMA</p>
+
+<table>
+  <tr>
+    <th>Sala</th>
+    <th>Film</th>
+    <th>Data</th>
+    <th>Ora</th>
+    <th>Posti Liberi</th>
+    <th>Posti Occupati</th>
+  </tr>
+
+  {% for n in results %}
+      <tr>
+        <th>{{n[0] }}</th>
+        <th>{{n[1] }}</th>
+        <th>{{n[2] }}</th>
+        <th>{{n[3] }} </th>
+        <th>{{n[4] }}</th>
+        <th>{{n[5] }}</th>
+      </tr>
+  {% endfor  %}
+</table>
+
+{% endblock %}
