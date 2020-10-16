@@ -1,5 +1,5 @@
 import sqlalchemy
-from sqlalchemy import create_engine, metadata , Column
+from sqlalchemy import create_engine , MetaData , Column, Table, Integer
 
 engine = create_engine('sqlite:///rossini.db', echo = True)
 metadata = MetaData()
