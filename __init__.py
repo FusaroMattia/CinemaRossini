@@ -10,18 +10,19 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI']= 'sqlite:////mnt/c/Users/Angry442/Desktop/Python/ProgettoBasi/rossini.db'
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=False
     app.config['SECRET_KEY'] = "1234"
-    engine = create_engine('sqlite:///:memory', echo = True)
     db.init_app(app)
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
+    login_manager.session_protection = "strong"
     login_manager.init_app(app)
 
-    from .models import user
+
+    from .models import User
 
     @login_manager.user_loader
     def load_user(user_id):
-        return user.query.get(int(user_id))
+        return User.query.get(int(user_id))
 
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)

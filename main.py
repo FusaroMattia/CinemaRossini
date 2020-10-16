@@ -13,12 +13,16 @@ def index():
     query = "SELECT * FROM proiezioni  ORDER BY data  DESC, ora DESC"
     cursor.execute(query)
     results = cursor.fetchmany(4)
-    cursor.close()
+    #cursor.close()
     return render_template('index.html', results = results)
 
 @main.route('/profile')
 def profile():
     if current_user.is_authenticated :
-        return render_template('profile.html', name=current_user.name)
+        id = current_user.get_id()
+        query = "SELECT * FROM utenti WHERE id = "+id
+        cursor.execute(query)
+        results = cursor.fetchone()
+        return render_template('profile.html', results=results)
     else:
         return render_template('profile.html')

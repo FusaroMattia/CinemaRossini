@@ -10,7 +10,9 @@ metadata = MetaData()
 #user = Table('user', metadata,Column('id',Integer, primary_key = True),Column('name',String , nullable = True ),Column('email',String , nullable = False ),Column('password',String , nullable = False ))
 
 utenti = Table('utenti', metadata,Column('id',Integer, primary_key = True),
-                                Column('nome',String , nullable = True ),
+                                Column('email',String , nullable = False ),
+                                Column('password',String , nullable = False ),
+                                Column('name',String , nullable = False ),
                                 Column('cognome',String , nullable = False ),
                                 Column('citta',String , nullable = True ),
                                 Column('stato',String , nullable = True ),
@@ -75,10 +77,10 @@ conn = engine.connect()
 
 
 #UTENTI
-conn.execute('INSERT INTO utenti("id","nome","cognome","citta","stato","data_nascita","sesso","riduzione","gestore") VALUES("1","Mattia","Fusaro","Venezia","Veneto","09/12/1999","M","10","1")  ')
-conn.execute('INSERT INTO utenti("id","nome","cognome","citta","stato","data_nascita","sesso","riduzione","gestore") VALUES("2","Giacomo","Visinoni","Venezia","Veneto","30/04/1999","M","15","1")  ')
-conn.execute('INSERT INTO utenti("id","nome","cognome","citta","stato","data_nascita","sesso","riduzione","gestore") VALUES("3","Lorenzo","Oliva","Venezia","Veneto","19/07/1999","M","0","0")  ')
-conn.execute('INSERT INTO utenti("id","nome","cognome","citta","stato","data_nascita","sesso","riduzione","gestore") VALUES("4","Anthony","Fusaro","Venezia","Veneto","22/04/1996","M","2","0")  ')
+conn.execute('INSERT INTO utenti("id","email","password","name","cognome","citta","stato","data_nascita","sesso","riduzione","gestore") VALUES("1","mattiafusaro8@gmail.com","sha256$REOk6wJn$e46761b392ec91074c032623a3fb02ab89bfd3d1b3cf9ad6b575d9d7582e8d37","Mattia","Fusaro","Venezia","Veneto","09/12/1999","M","10","1")  ')
+conn.execute('INSERT INTO utenti("id","email","password","name","cognome","citta","stato","data_nascita","sesso","riduzione","gestore") VALUES("2","visi@gmail.com","sha256$REOk6wJn$e46761b392ec91074c032623a3fb02ab89bfd3d1b3cf9ad6b575d9d7582e8d37","Giacomo","Visinoni","Venezia","Veneto","30/04/1999","M","15","1")  ')
+conn.execute('INSERT INTO utenti("id","email","password","name","cognome","citta","stato","data_nascita","sesso","riduzione","gestore") VALUES("3","oliva@gmail.com","sha256$REOk6wJn$e46761b392ec91074c032623a3fb02ab89bfd3d1b3cf9ad6b575d9d7582e8d37","Lorenzo","Oliva","Venezia","Veneto","19/07/1999","M","0","0")  ')
+conn.execute('INSERT INTO utenti("id","email","password","name","cognome","citta","stato","data_nascita","sesso","riduzione","gestore") VALUES("4","anthony@gmail.com","sha256$REOk6wJn$e46761b392ec91074c032623a3fb02ab89bfd3d1b3cf9ad6b575d9d7582e8d37","Anthony","Fusaro","Venezia","Veneto","22/04/1996","M","2","0")  ')
 
 #SALE
 conn.execute('INSERT INTO sale("NSala","posti_totali","posti_disabili","prezzo_posti") VALUES("1","100","7","9") ')
@@ -89,7 +91,8 @@ conn.execute('INSERT INTO sale("NSala","posti_totali","posti_disabili","prezzo_p
 #PROIEZIONI
 conn.execute('INSERT INTO proiezioni("idProiezione","sala","film","data","ora","posti_liberi","posti_occupati") VALUES("1","1","1","15/10/2020","20:00:00","97","3") ')
 conn.execute('INSERT INTO proiezioni("idProiezione","sala","film","data","ora","posti_liberi","posti_occupati") VALUES("2","3","1","15/10/2020","22:00:00","50","0") ')
-
+conn.execute('INSERT INTO proiezioni("idProiezione","sala","film","data","ora","posti_liberi","posti_occupati") VALUES("3","2","1","15/10/2020","18:00:00","200","0") ')
+conn.execute('INSERT INTO proiezioni("idProiezione","sala","film","data","ora","posti_liberi","posti_occupati") VALUES("4","1","1","15/10/2020","16:00:00","100","0") ')
 
 
 #ACQUISTI
