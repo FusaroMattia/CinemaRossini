@@ -53,6 +53,7 @@ cast = Table('cast', metadata,Column('IdCast',Integer, primary_key = True),
                                 Column('descr',TEXT , nullable = False),
             )
 sale = Table('sale', metadata,Column('NSala',Integer, primary_key = True),
+                                Column('nome',String , nullable = True),
                                 Column('posti_totali',Integer, nullable = False ),
                                 Column('posti_disabili',Integer, nullable = False ),
                                 Column('prezzo_posti',Integer, nullable = False )
@@ -83,10 +84,10 @@ conn.execute('INSERT INTO utenti("id","email","password","name","cognome","citta
 conn.execute('INSERT INTO utenti("id","email","password","name","cognome","citta","stato","data_nascita","sesso","riduzione","gestore") VALUES("4","anthony@gmail.com","sha256$REOk6wJn$e46761b392ec91074c032623a3fb02ab89bfd3d1b3cf9ad6b575d9d7582e8d37","Anthony","Fusaro","Venezia","Veneto","1999-09-09","M","2","0")  ')
 
 #SALE
-conn.execute('INSERT INTO sale("NSala","posti_totali","posti_disabili","prezzo_posti") VALUES("1","100","7","9") ')
-conn.execute('INSERT INTO sale("NSala","posti_totali","posti_disabili","prezzo_posti") VALUES("2","200","3","7") ')
-conn.execute('INSERT INTO sale("NSala","posti_totali","posti_disabili","prezzo_posti") VALUES("3","50","1","12") ')
-conn.execute('INSERT INTO sale("NSala","posti_totali","posti_disabili","prezzo_posti") VALUES("4","125","5","8") ')
+conn.execute('INSERT INTO sale("NSala","nome","posti_totali","posti_disabili","prezzo_posti") VALUES("1","Dedalo","100","7","9") ')
+conn.execute('INSERT INTO sale("NSala","nome","posti_totali","posti_disabili","prezzo_posti") VALUES("2","Icaro","200","3","7") ')
+conn.execute('INSERT INTO sale("NSala","nome","posti_totali","posti_disabili","prezzo_posti") VALUES("3","Ulisse","50","1","12") ')
+conn.execute('INSERT INTO sale("NSala","nome","posti_totali","posti_disabili","prezzo_posti") VALUES("4","Percy","125","5","8") ')
 
 #PROIEZIONI
 conn.execute('INSERT INTO proiezioni("idProiezione","sala","film","data","ora","posti_liberi","posti_occupati") VALUES("1","1","1","2020-10-15","20:00:00","97","3") ')

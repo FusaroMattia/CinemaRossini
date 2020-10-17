@@ -12,8 +12,19 @@ cursor = conn.cursor()
 def index():
     query = "SELECT * FROM proiezioni  ORDER BY data  DESC, ora ASC"
     cursor.execute(query)
-    results = cursor.fetchmany(4)
-    #cursor.close()
+    results = cursor.fetchmany(12)
+
+    for n in results:
+        sala = n[1]
+        film = n[2]
+        s = text("SELECT titolo FROM film WHERE CodFilm =:codfilm")
+        n[2] = cursor.execute(s, codfilm=str(film))
+
+    #    cursor.execute("SELECT nome FROM sale WHERE NSala = ? " ,  [str(sala)]  )
+        #cursor.execute(query)
+    #n[1] = cursor.fetchone()
+
+
     return render_template('index.html', results = results)
 
 @main.route('/profile')
@@ -26,3 +37,12 @@ def profile():
         return render_template('profile.html', results=results)
     else:
         return redirect(url_for('auth.login'))
+
+@main.route('/film' , methods=['POST'])
+def film():
+    if request.method == "POST" :
+       film = request.form.get('film')
+
+       return render_template('film.html')
+    else:
+       return redirect(url_for('main.index'))

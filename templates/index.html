@@ -1,5 +1,17 @@
 {% extends "base.html" %}
 {% block title %} CINEMA ROSSINI {% endblock %}
+
+{% block navbar %}
+
+      {% if current_user.is_authenticated :%}
+        <a class="btn btn-danger  d-none d-lg-inline-block mb-3 mb-md-0 ml-md-3" href="/logout" role="button">Logout</a>
+      {% else: %}
+        <a class="btn  btn-success d-none d-lg-inline-block mb-3 mb-md-0 ml-md-3" href="/login" role="button">Login</a>
+        <a class="btn  btn-info d-none d-lg-inline-block mb-3 mb-md-0 ml-md-3" href="/signup" role="button">Signup</a>
+      {% endif%}
+{% endblock %}
+
+
 {% block content %}
 <p> QUI ABBIAMO LA LISTA DI FILM IN PROGRAMMA</p>
 <div class="contenitore">
@@ -19,7 +31,11 @@
 
 
   {% if current_user.is_authenticated :%}
-          <a class="table-data" href="#">{{n[2] }}</a>
+          <div class="table-data">
+          <form action="/film" method="post" id="form">
+          <a href="javascript:{}" onclick="document.getElementById('form').submit(); return false;">{{n[2] }}</a>
+          </form>
+          </div>
   {% else: %}
           <div class="table-data">{{n[2] }}</div>
   {% endif%}
