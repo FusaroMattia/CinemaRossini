@@ -10,38 +10,101 @@
 
 
 <body>
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
- 				 <a class="navbar-brand">Rossini</a>
-  				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    			<span class="navbar-toggler-icon"></span>
-  				</button>
-  			<div class="collapse navbar-collapse" id="navbarNav">
-    			<ul class="navbar-nav">
-      				<li class="nav-item active">
-       				<a class="nav-link" href="/">Home <span class="sr-only">(current)<span></a>
-      				</li>
-              <li class="nav-item">
-      			 		  <a class="nav-link" href="/profile" >Profile</a>
-       				</li>
-     				 <li class="nav-item">
-     			 		  <a class="nav-link" href="/login" >Login</a>
-      				</li>
-              <li class="nav-item">
-      			 		  <a class="nav-link" href="/signup" >Singup</a>
-       				</li>
-              <li class="nav-item">
-      			 		  <a class="nav-link" href="/logout" >Logout</a>
-       				</li>
-    			</ul>
- 			 </div>
-		</nav>
+  <header class="navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar bg-dark" style="position: absolute;width: 100%;left: 0%;top: 0%;z-index: 10000;">
+    <!-- LOGO -->
+  <a class="navbar-brand mr-0 mr-md-2" aria-label="Rossini"> Rossini </a>
+
+<div class="navbar-nav-scroll">
+<ul class="navbar-nav bd-navbar-nav flex-row">
+  <li class="nav-item">
+    <a class="nav-link " href="/" onclick="nav('home')" id="home" >Home</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/profile" onclick="nav('profile')" id="profile">Profile</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link " href="/" onclick="nav('ex1')" id="ex1" >Ex1</a>
+  </li>
+</ul>
+</div>
+
+<ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex"></ul>
+
+{% block navbar %}{% endblock %}
+
+</header>
+
+<script>
+
+  document.getElementById("home").classList.remove("active");
+  document.getElementById("profile").classList.remove("active");
+  document.getElementById("ex1").classList.remove("active");
+
+  document.getElementById("home").classList.remove("disabled");
+  document.getElementById("profile").classList.remove("disabled");
+  document.getElementById("ex1").classList.remove("disabled");
+
+  var element = getCookie("page")
+  if(element != null){
+    document.getElementById(element).classList.add("disabled");
+    document.getElementById(element).classList.add("active");
+  }
+
+function nav(element){
+    setCookie("page", element, 100000);
+}
+
+
+function setCookie(cname, cvalue, exdays) {
+  var d = new Date();
+  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+  var expires = "expires="+ d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+</script>
 
 
         <h1>{% block title %}{% endblock %}</h1>
 
         {% block content %}{% endblock %}
 
+<style>
 
+h1{
+  position: absolute;
+    top: 11%;
+    width: 100%;
+    left: 0%;
+    text-align: center;
+}
+h2{
+  position: absolute;
+    top: 12vw;
+    left: 0%;
+    width: 100%;
+    text-align: center;
+}
+
+input{
+        margin-bottom: 12px;
+    }
+</style>
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
