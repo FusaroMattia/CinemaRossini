@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% block title %} Profile {% endblock %}
 {% block content %}
+{% if messages %}
+    <div class="notification is-danger">
+        {{ messages[0] }}. Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+    </div>
+{% endif %}
 <h1 class="title">
 <p>  Nome, {{ results[3] }}! </p>
 <p>	Email, {{results[1]}} </p>

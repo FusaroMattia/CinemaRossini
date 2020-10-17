@@ -2,7 +2,7 @@
 {% block title %} CINEMA ROSSINI {% endblock %}
 {% block content %}
 <p> QUI ABBIAMO LA LISTA DI FILM IN PROGRAMMA</p>
-<div class="container">
+<div class="contenitore">
        <div class="table">
           <div class="table-header">
                   <div class="header__item">Sala </div>
@@ -37,7 +37,6 @@
 
 
 <style>
-@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700");
 *, *:before, *:after {
   box-sizing: border-box;
 }
@@ -52,14 +51,17 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
-.container {
-  max-width: 1000px;
+.contenitore {
+  position: absolute;
+    top: 0vw;
+    left: 0vw;
   margin-right: auto;
-  margin-left: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
 }
 
 .table {
