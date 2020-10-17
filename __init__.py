@@ -1,8 +1,8 @@
-from flask import Flask, render_template, redirect, url_for, session,request,g, request,Blueprint
+from flask import Flask, render_template, redirect, url_for,request,g, request,Blueprint
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user, AnonymousUserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine, text
-
+#from datatime import datetime,timedelta
 db = SQLAlchemy()
 
 def create_app():
@@ -16,6 +16,8 @@ def create_app():
     login_manager.login_view = 'auth.login'
     login_manager.session_protection = "strong"
     login_manager.init_app(app)
+
+    
 
 
     from .models import User

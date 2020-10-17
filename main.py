@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, redirect, url_for, request,flash
-from flask_login import login_user, logout_user, login_required,current_user
+from flask import Blueprint, render_template, redirect, url_for, request,flash,session
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user, AnonymousUserMixin
 from . import db
 from sqlalchemy import create_engine, text
 import sqlite3
@@ -10,7 +10,7 @@ cursor = conn.cursor()
 
 @main.route('/')
 def index():
-    query = "SELECT * FROM proiezioni  ORDER BY data  DESC, ora DESC"
+    query = "SELECT * FROM proiezioni  ORDER BY data  DESC, ora ASC"
     cursor.execute(query)
     results = cursor.fetchmany(4)
     #cursor.close()
@@ -25,4 +25,4 @@ def profile():
         results = cursor.fetchone()
         return render_template('profile.html', results=results)
     else:
-        return render_template('profile.html')
+        return redirect(url_for('auth.login'))
