@@ -13,19 +13,32 @@ def index():
     query = "SELECT * FROM proiezioni  ORDER BY data  DESC, ora ASC"
     cursor.execute(query)
     results = cursor.fetchmany(12)
-
+    array_films = []
+    array_film = []
     for n in results:
         sala = n[1]
         film = n[2]
-        s = text("SELECT titolo FROM film WHERE CodFilm =:codfilm")
-        n[2] = cursor.execute(s, codfilm=str(film))
+        query = "SELECT titolo FROM film WHERE CodFilm = "+str(film)
+        cursor.execute(query)
+        titolo = cursor.fetchone()
+        array_film.append(titolo)
 
-    #    cursor.execute("SELECT nome FROM sale WHERE NSala = ? " ,  [str(sala)]  )
-        #cursor.execute(query)
-    #n[1] = cursor.fetchone()
+        query = "SELECT nome FROM sale WHERE NSala = "+str(sala)
+        cursor.execute(query)
+        nome_sala = cursor.fetchone()
+        array_film.append(nome_sala)
+        array_film.append(n[3])
+        array_film.append(n[4])
+        array_film.append(n[5])
+        array_film.append(n[6])
+        array_films.append(array_film)
+        print(array_films)
+        array_film.clear()
 
 
-    return render_template('index.html', results = results)
+
+
+    return render_template('index.html', results = array_film)
 
 @main.route('/profile')
 def profile():
