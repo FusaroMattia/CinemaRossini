@@ -54,9 +54,6 @@ def signup_post():
     citta = request.form.get('citta')
     stato = request.form.get('stato')
     data = request.form.get('data_nascita')
-
-    a = data.split("/")
-    anno_nascita = "{0}-{1}-{2}.".format(a[2], a[1], a[0])
     sesso = request.form.get('sesso')
 
     user = User.query.filter_by(email=email).first()
@@ -66,7 +63,7 @@ def signup_post():
         return redirect(url_for('auth.signup'))
 
 
-    new_user = User(email=email, name=name, password=generate_password_hash(password, method='sha256'),cognome=cognome, citta=citta, stato=stato, data_nascita=data_nascita,sesso=sesso,riduzione="0",gestore="0")
+    new_user = User(email=email, name=name, password=generate_password_hash(password, method='sha256'),cognome=cognome, citta=citta, stato=stato, data_nascita=data,sesso=sesso,riduzione="0",gestore="0")
 
     # add the new user to the database
     db.session.add(new_user)
