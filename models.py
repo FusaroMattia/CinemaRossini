@@ -9,13 +9,15 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(150))
     name = db.Column(db.String(100))
 
+    gestore = db.Column(db.Integer,db.ForeignKey('ruoli.id', ondelete='RESTRICT'), server_default='2')
+
     cognome = db.Column(db.String(100))
     citta = db.Column(db.String(100))
     stato = db.Column(db.String(100))
     data_nascita = db.Column(db.Date)
     sesso = db.Column(db.String(10))
     riduzione = db.Column(db.Integer)
-    gestore = db.Column(db.Integer)
+
 
     def __init__(self, email, name, password,cognome,citta,stato,data_nascita,sesso,riduzione,gestore):
             self.name = name
@@ -29,4 +31,8 @@ class User(UserMixin, db.Model):
             self.riduzione = riduzione
             self.gestore = gestore
 
-    #table_args = {'extend_existing': True}
+
+class Role(db.Model):
+    __tablename__ = "ruoli"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True)

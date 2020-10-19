@@ -27,24 +27,24 @@
   <div class="table-content">
   {% for n in results %}
         <div class="table-row">
-            <div class="table-data">{{n[0] }}</div>
+            <div class="table-data">{{sale[loop.index-1] }}</div>
 
 
   {% if current_user.is_authenticated :%}
           <div class="table-data">
           <form action="/film" method="post" id="form">
-          <a href="javascript:{}" onclick="document.getElementById('form').submit(); return false;">{{n[1] }}</a>
+          <a href="javascript:{}" onclick="document.getElementById('form').submit(); return false;">{{titoli[loop.index-1] }}</a>
           </form>
           </div>
   {% else: %}
-          <div class="table-data">{{n[1] }}</div>
+          <div class="table-data">{{titoli[loop.index-1] }}</div>
   {% endif%}
 
 
-            <div class="table-data">{{n[2] }}</div>
             <div class="table-data">{{n[3] }}</div>
             <div class="table-data">{{n[4] }}</div>
             <div class="table-data">{{n[5] }}</div>
+            <div class="table-data">{{n[6] }}</div>
     </div>
   {% endfor  %}
   </div>
