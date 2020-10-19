@@ -3,11 +3,11 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from . import db
 from sqlalchemy import create_engine, text
 from flask_user import login_required,UserManager, UserMixin, SQLAlchemyAdapter,roles_required
-import sqlite3
 
 main = Blueprint('main', __name__)
-conn = sqlite3.connect('rossini.db', check_same_thread=False)
-cursor = conn.cursor()
+engine = create_engine("postgresql+psycopg2://admin:admin@localhost/rossini")
+connection = engine.raw_connection()
+cursor = connection.cursor()
 
 @main.route('/')
 def index():
@@ -25,7 +25,7 @@ def index():
         titolo_film = cursor.fetchone()
         titoli.extend(titolo_film)
 
-        query = "SELECT nome FROM sale WHERE NSala = "+str(sala)
+        query = "SELECT nome FROM sale WHERE sale.NSala = "+str(sala)
         cursor.execute(query)
         nome_sala = cursor.fetchone()
         sale.extend(nome_sala)
