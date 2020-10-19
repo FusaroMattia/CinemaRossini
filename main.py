@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, request,flash,s
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user, AnonymousUserMixin
 from . import db
 from sqlalchemy import create_engine, text
+from flask_user import login_required,UserManager, UserMixin, SQLAlchemyAdapter,roles_required
 import sqlite3
 
 main = Blueprint('main', __name__)
@@ -13,34 +14,29 @@ def index():
     query = "SELECT * FROM proiezioni  ORDER BY data  DESC, ora ASC"
     cursor.execute(query)
     results = cursor.fetchmany(12)
-    array_films = []
-    array_film = []
+    titoli = []
+    sale = []
     for n in results:
         sala = n[1]
         film = n[2]
-        query = "SELECT titolo FROM film WHERE CodFilm = "+str(film)
+
+        query = "SELECT titolo FROM film WHERE codfilm = "+str(film)
         cursor.execute(query)
-        titolo = cursor.fetchone()
-        array_film.append(titolo)
+        titolo_film = cursor.fetchone()
+        titoli.extend(titolo_film)
 
         query = "SELECT nome FROM sale WHERE NSala = "+str(sala)
         cursor.execute(query)
         nome_sala = cursor.fetchone()
-        array_film.append(nome_sala)
-        array_film.append(n[3])
-        array_film.append(n[4])
-        array_film.append(n[5])
-        array_film.append(n[6])
-        array_films.append(array_film)
-        print(array_films)
-        array_film.clear()
+        sale.extend(nome_sala)
 
 
 
 
-    return render_template('index.html', results = array_film)
+    return render_template('index.html', results = results, sale=sale,titoli=titoli)
 
 @main.route('/profile')
+@login_required
 def profile():
     if current_user.is_authenticated :
         id = current_user.get_id()

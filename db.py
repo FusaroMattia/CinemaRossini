@@ -1,13 +1,21 @@
 import sqlalchemy
 from sqlalchemy import create_engine, MetaData , Column,Table,Integer,String,Boolean,DATE,ForeignKey,TEXT
-from sqlalchemy_utils import create_database, drop_database
+from sqlalchemy_utils import create_database, drop_database,database_exists
 
-engine = create_engine('sqlite:////mnt/c/Users/Angry442/Desktop/Python/ProgettoBasi/rossini.db', echo = True)
+engine = create_engine('postgresql://admin:admin@localhost/rossini', echo = True)
+
+if not database_exists(engine.url):
+    create_database(engine.url)
+
 drop_database(engine.url)
 create_database(engine.url)
 metadata = MetaData()
 
-#user = Table('user', metadata,Column('id',Integer, primary_key = True),Column('name',String , nullable = True ),Column('email',String , nullable = False ),Column('password',String , nullable = False ))
+
+ruoli = Table('ruoli', metadata,Column('id',Integer, primary_key = True),
+                                Column('name',String , nullable = False )
+            )
+
 
 utenti = Table('utenti', metadata,Column('id',Integer, primary_key = True),
                                 Column('email',String , nullable = False ),
@@ -25,8 +33,8 @@ utenti = Table('utenti', metadata,Column('id',Integer, primary_key = True),
 
 
 
-film = Table('film', metadata,Column('CodFilm',Integer, primary_key = True),
-                                Column('titolo',Integer, nullable = False ),
+film = Table('film', metadata,Column('codfilm',Integer, primary_key = True),
+                                Column('titolo',String, nullable = False ),
                                 Column('autore',Integer , ForeignKey('cast.IdCast'), nullable = False ),
                                 Column('durata',Integer, nullable = False ),
                                 Column('generi',Integer , ForeignKey('generi.IdGeneri'), nullable = True),
@@ -60,7 +68,7 @@ sale = Table('sale', metadata,Column('NSala',Integer, primary_key = True),
             )
 proiezioni = Table('proiezioni', metadata,Column('idProiezione',Integer, primary_key = True),
                                 Column('sala',Integer ,  ForeignKey('sale.NSala'), nullable = False),
-                                Column('film',Integer ,   ForeignKey('film.CodFilm'), nullable = False),
+                                Column('film',Integer ,   ForeignKey('film.codfilm'), nullable = False),
                                 Column('data',DATE, nullable = False ),
                                 Column('ora',DATE, nullable = False ),
                                 Column('posti_liberi',Integer, nullable = False ),
@@ -75,6 +83,11 @@ acquisti = Table('acquisti', metadata,Column('id',Integer, primary_key = True),
 metadata.create_all(engine)
 
 conn = engine.connect()
+
+#RUOLI
+conn.execute('INSERT INTO ruoli("id","nome") VALUES("0","Admin") ')
+conn.execute('INSERT INTO ruoli("id","nome") VALUES("1","Gestore") ')
+conn.execute('INSERT INTO ruoli("id","nome") VALUES("2","Cliente") ')
 
 
 #UTENTI
@@ -117,7 +130,8 @@ conn.execute('INSERT INTO cast("IdCast","nome","cognome","genere","stato","data_
 
 
 #FILM
-conn.execute('INSERT INTO film("CodFilm","titolo","autore","durata","generi","lingua_originale") VALUES("1","Io sono leggenda","1","145","1","1") ')
+conn.execute('INSERT INTO film("codfilm","titolo","autore","durata","generi","lingua_originale") VALUES("1","Io sono leggenda","1","145","1","1") ')
+conn.execute('INSERT INTO film("codfilm","titolo","autore","durata","generi","lingua_originale") VALUES("2","Transformers","1","200","1","1") ')
 
 
 
