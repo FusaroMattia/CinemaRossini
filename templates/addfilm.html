@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %} Aggiungi Film {% endblock %}
+{% block content %}
+{% with messages = get_flashed_messages() %}
+
+{% endwith %}
+
+<form action="/addfilm" method="post">
+	<div class="field">
+							 <div class="control">
+									 <input class="input is-large" type="text" name="titolo" placeholder="Nome del film" required>
+							 </div>
+					 </div>
+
+					 <div class="field">
+             <select name="autore" required>
+                   <option selected="true" value="" disabled="disabled">Scegli un regista</option>
+               {% for reg in registi %}
+                   <option value="{{reg[0]}}">{{reg[1]}} </option>
+               {% endfor  %}
+            </select>
+			     </div>
+          <div class="field">
+        			<div class="control">
+        			      <input class="input is-large" type="number" name="durata" placeholder="Durata del film" min="10" max="300" required>
+        			  </div>
+        	</div>
+          <div class="field">
+              <div class="control">
+                <select name="genere1" required>
+                      <option selected="true" value="" disabled="disabled">Scegli un genere</option>
+                  {% for gen in generi %}
+                      <option value="{{gen[0]}}">{{gen[1]}} </option>
+                  {% endfor  %}
+               </select>
+               <select name="genere2">
+                     <option selected="true" value="" disabled="disabled">Scegli un genere</option>
+										 <option value="empty">Nessun genere</option>
+                 {% for gen in generi %}
+                     <option value="{{gen[0]}}">{{gen[1]}} </option>
+                 {% endfor  %}
+              </select>
+              <select name="genere3">
+                    <option  selected="true" value="" disabled="disabled">Scegli un genere</option>
+										<option value="empty">Nessun genere</option>
+                {% for gen in generi %}
+                    <option value="{{gen[0]}}">{{gen[1]}} </option>
+                {% endfor  %}
+             </select>
+              </div>
+          </div>
+          <div class="field">
+            <label class="checkbox">
+                <input name="lingua_originale" type="checkbox">
+                Lingua originale
+            </label>
+        	</div>
+
+
+		<div>
+			<button type="submit">Login</button>
+		</div>
+</form>
+<style>
+form{
+  position: absolute;
+    width: 100%;
+    top: 11vw;
+    left: 0%;
+    align-items: center;
+    text-align: center;
+}
+</style>
+
+
+
+{% endblock %}

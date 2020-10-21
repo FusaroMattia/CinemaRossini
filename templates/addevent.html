@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %} Aggiungi Proiezione {% endblock %}
+{% block content %}
+{% with messages = get_flashed_messages() %}
+
+{% endwith %}
+
+<form action="/addevent" method="post">
+					 <div class="field">
+             <select name="film" required>
+                   <option selected="true" value="" disabled="disabled">Scegli un film</option>
+               {% for fm in film %}
+                   <option value="{{fm[0]}}">{{fm[1]}} </option>
+               {% endfor  %}
+            </select>
+			     </div>
+           <div class="field">
+             <select name="sala" required>
+                   <option selected="true" value="" disabled="disabled">Scegli una sala</option>
+               {% for sl in sale %}
+                   <option value="{{sl[0]}}">{{sl[1]}} </option>
+               {% endfor  %}
+            </select>
+			     </div>
+
+          <div class="field">
+           <input type="date" name="data">
+          </div>
+
+          <div class="field">
+           <input type="time" name="ora">
+          </div>
+
+
+
+
+
+		<div>
+			<button type="submit">AGGIUNGI PROIEZIONE</button>
+		</div>
+</form>
+<style>
+form{
+  position: absolute;
+    width: 100%;
+    top: 11vw;
+    left: 0%;
+    align-items: center;
+    text-align: center;
+}
+</style>
+
+
+
+{% endblock %}
