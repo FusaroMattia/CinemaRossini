@@ -50,8 +50,12 @@ def profile():
 @main.route('/film' , methods=['POST'])
 def film():
     if request.method == "POST" :
-       film = request.form.get('film')
 
-       return render_template('film.html')
+       film = request.form.get('film')
+       query = "SELECT * FROM film WHERE codfilm = "+str(film)
+       cursor.execute(query)
+       nome_film = cursor.fetchone()
+
+       return render_template('film.html', film = nome_film)
     else:
        return redirect(url_for('main.index'))

@@ -33,6 +33,7 @@
   {% if current_user.is_authenticated :%}
           <div class="table-data">
           <form action="/film" method="post" id="form">
+          <input type="hidden" name="film" value="{{n[2]}}">
           <a href="javascript:{}" onclick="document.getElementById('form').submit(); return false;">{{titoli[loop.index-1] }}</a>
           </form>
           </div>
