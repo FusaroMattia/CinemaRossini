@@ -133,6 +133,46 @@ conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occup
 
 
 
+#RUOLI
+role_gestore = "SELECT 1 FROM pg_roles WHERE rolname='gestore'"
+role_cliente = "SELECT 1 FROM pg_roles WHERE rolname='cliente'"
+
+
+if role_gestore:
+    conn.execute("DROP ROLE gestore ")
+    conn.execute("CREATE ROLE gestore WITH LOGIN PASSWORD '1234' ")
+else:
+    conn.execute("CREATE ROLE gestore WITH LOGIN PASSWORD '1234' ")
+
+if role_cliente:
+    conn.execute("DROP ROLE cliente ")
+    conn.execute("CREATE ROLE cliente WITH LOGIN PASSWORD '1234' ")
+else:
+    conn.execute("CREATE ROLE cliente WITH LOGIN PASSWORD '1234' ")
+
+
+
+
+#conn.execute("DROP ROLE admin")
+#conn.execute("CREATE ROLE admin WITH PASSWORD '1234'")
+
+
+#PERMESSI
+#SELECT
+conn.execute("GRANT SELECT ON film TO PUBLIC; GRANT SELECT ON proiezioni TO PUBLIC; GRANT SELECT ON sale TO PUBLIC; GRANT SELECT ON acquisti TO gestore; GRANT SELECT ON utenti TO gestore; GRANT SELECT ON attori TO gestore; GRANT SELECT ON generi TO gestore; GRANT SELECT ON genere TO gestore;")
+
+#INSERT
+conn.execute("GRANT INSERT ON genere TO gestore; GRANT INSERT ON generi TO gestore; GRANT INSERT ON attori TO gestore; GRANT INSERT ON film TO gestore; GRANT INSERT ON sale TO gestore; GRANT INSERT ON proiezioni TO gestore;")
+
+#UPDATE
+conn.execute("GRANT UPDATE ON genere TO gestore; GRANT UPDATE ON generi TO gestore; GRANT UPDATE ON attori TO gestore; GRANT UPDATE ON film TO gestore; GRANT UPDATE ON sale TO gestore; GRANT UPDATE ON proiezioni TO gestore; GRANT UPDATE ON acquisti TO gestore; GRANT UPDATE ON utenti TO gestore;")
+
+#DELETE
+conn.execute("GRANT DELETE ON genere TO gestore; GRANT DELETE ON generi TO gestore; GRANT DELETE ON utenti TO gestore; GRANT DELETE ON attori TO gestore; GRANT DELETE ON film TO gestore; GRANT DELETE ON sale TO gestore; GRANT DELETE ON proiezioni TO gestore; GRANT DELETE ON acquisti TO gestore;")
+
+
+
+
 
 
 
