@@ -8,7 +8,7 @@ db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI']= 'postgresql+psycopg2://admin:admin@localhost/rossini'  
+    app.config['SQLALCHEMY_DATABASE_URI']= 'postgresql+psycopg2://admin:admin@localhost/rossini'
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=False
     app.config["CSRF_ENABLED"]=True
     app.config["USER_ENABLE_EMAIL"]=False
@@ -39,5 +39,8 @@ def create_app():
 
     from .manager import manager as manager_blueprint
     app.register_blueprint(manager_blueprint)
+
+    from .client import client as client_blueprint
+    app.register_blueprint(client_blueprint)
 
     return app
