@@ -34,29 +34,29 @@ utenti = Table('utenti', metadata,Column('id',Integer, primary_key = True),
 
 
 
-genere = Table('genere', metadata,Column('idgeneri',Integer, primary_key = True),
+genere = Table('genere', metadata,Column('idgenere',Integer, primary_key = True),
                                 Column('titolo',String , nullable = False),
                                 Column('descr',TEXT , nullable = False),
             )
 
 generi = Table('generi', metadata,Column('idgeneri',Integer, primary_key = True),
-                                Column('genere1',Integer, ForeignKey('genere.idgeneri'), nullable = False),
-                                Column('genere2',Integer, ForeignKey('genere.idgeneri'), nullable = True),
-                                Column('genere3',Integer, ForeignKey('genere.idgeneri'), nullable = True),
+                                Column('genere1',Integer, ForeignKey('genere.idgenere'), nullable = False),
+                                Column('genere2',Integer, ForeignKey('genere.idgenere'), nullable = True),
+                                Column('genere3',Integer, ForeignKey('genere.idgenere'), nullable = True),
 
         )
 
-attori = Table('attori', metadata,Column('IdAttori',Integer, primary_key = True),
+attori = Table('attori', metadata,Column('idattori',Integer, primary_key = True),
                                 Column('nome',String , nullable = True),
                                 Column('cognome',String , nullable = False),
-                                Column('genere',Integer , ForeignKey('generi.idgeneri'), nullable = False),
+                                Column('genere',Integer , ForeignKey('genere.idgenere'), nullable = False),
                                 Column('stato',String, nullable = True),
                                 Column('data_nascita',DATE , nullable = False),
                                 Column('descr',TEXT , nullable = False),
             )
 film = Table('film', metadata,Column('codfilm',Integer, primary_key = True),
                                 Column('titolo',String, nullable = False ),
-                                Column('autore',Integer , ForeignKey('attori.IdAttori'), nullable = False ),
+                                Column('autore',Integer , ForeignKey('attori.idattori'), nullable = False ),
                                 Column('durata',Integer, nullable = False ),
                                 Column('generi',Integer , ForeignKey('generi.idgeneri'), nullable = True),
                                 Column('lingua_originale',Boolean, nullable = True )
@@ -68,7 +68,7 @@ sale = Table('sale', metadata,Column('nsala',Integer, primary_key = True),
                                 Column('posti_disabili',Integer, nullable = False ),
                                 Column('prezzo_posti',Integer, nullable = False )
             )
-proiezioni = Table('proiezioni', metadata,Column('idProiezione',Integer, primary_key = True),
+proiezioni = Table('proiezioni', metadata,Column('idproiezione',Integer, primary_key = True),
                                 Column('sala',Integer ,  ForeignKey('sale.nsala'), nullable = False),
                                 Column('film',Integer ,   ForeignKey('film.codfilm'), nullable = False),
                                 Column('data',DATE, nullable = False ),
@@ -79,7 +79,7 @@ proiezioni = Table('proiezioni', metadata,Column('idProiezione',Integer, primary
 
 acquisti = Table('acquisti', metadata,Column('id',Integer, primary_key = True),
                                 Column('utente',Integer ,  ForeignKey('utenti.id'), nullable = False ),
-                                Column('proiezione',Integer , ForeignKey('proiezioni.idProiezione'), nullable = False   ),
+                                Column('proiezione',Integer , ForeignKey('proiezioni.idproiezione'), nullable = False   ),
                                 Column('posti',Integer , nullable = False )
             )
 metadata.create_all(engine)
