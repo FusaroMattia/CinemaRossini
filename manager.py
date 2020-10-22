@@ -7,7 +7,6 @@ import sqlite3
 
 manager = Blueprint('manager', __name__)
 engine = create_engine("postgresql+psycopg2://admin:admin@localhost/rossini")
-connection = engine.raw_connection()
 conn = engine.connect()
 trans = conn.begin()
 
