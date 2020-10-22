@@ -12,11 +12,46 @@
 {% endblock %}
 
 
+
+
 {% block content %}
 
-      <img src="../immagini/io_sono_leggenda.jpg" alt="Mia Immagine">
 
-          <h2>{{film}}</h2>
+<img src="{{url_for('static', filename='{{film[1]}}.jpg')}}" alt="Mia Immagine" style= "width:400px;height:400px;">
+
+
+          <h2>{{film[1]}}</h2>
+
+
+
+
+
+<hr><hr><hr><hr><hr><hr>
+          <h3>Attori</h3>
+
+          <p>{{film[2]}}</p>
+
+
+          <p>La durata del film è di {{film[3]}} minuti</p>
+
+
+
+          <p>Generi : {{generi}}, {{generi[2]}}, {{generi[3]}}</p>
+
+
+
+
+
+
+{%if film[5] == True :%}
+    <p>Disponibile in lingua originale: si</p>
+{% else %}
+    <p>Disponibile in lingua originale: no</p>
+
+{%endif%}
+
+
+
 
 
 {% endblock %}

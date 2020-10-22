@@ -56,6 +56,15 @@ def film():
        cursor.execute(query)
        nome_film = cursor.fetchone()
 
-       return render_template('film.html', film = nome_film)
+       generi = nome_film[4]
+       query = "SELECT * FROM generi WHERE idgeneri = "+str(generi)
+       cursor.execute(query)
+       nome_generi = cursor.fetchone()
+
+       genere=generi[1]
+       query= "SELECT * FROM genere WHERE idgenere = "+str(genere)
+
+
+       return render_template('film.html', film = nome_film, generi = nome_generi)
     else:
        return redirect(url_for('main.index'))

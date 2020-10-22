@@ -18,7 +18,7 @@ def login_post():
         user = User.query.filter_by(email=email).first()
 
         if not user or not check_password_hash(user.password, password):
-            flash('Please check your login details and try again.' + email + password +'     '+ user.password +'     '+ generate_password_hash(password, method='sha256'))
+            flash('Please check your login details and try again.')# + email + password +'     '+ user.password +'     '+ generate_password_hash(password, method='sha256'))
             return redirect(url_for('auth.login')) # if the user doesn't exist or password is wrong, reload the page
 
         login_user(user, remember=remember)

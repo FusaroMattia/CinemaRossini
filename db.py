@@ -34,22 +34,22 @@ utenti = Table('utenti', metadata,Column('id',Integer, primary_key = True),
 
 
 
-genere = Table('genere', metadata,Column('IdGenere',Integer, primary_key = True),
+genere = Table('genere', metadata,Column('idgeneri',Integer, primary_key = True),
                                 Column('titolo',String , nullable = False),
                                 Column('descr',TEXT , nullable = False),
             )
 
-generi = Table('generi', metadata,Column('IdGeneri',Integer, primary_key = True),
-                                Column('genere1',Integer, ForeignKey('genere.IdGenere'), nullable = False),
-                                Column('genere2',Integer, ForeignKey('genere.IdGenere'), nullable = True),
-                                Column('genere3',Integer, ForeignKey('genere.IdGenere'), nullable = True),
+generi = Table('generi', metadata,Column('idgeneri',Integer, primary_key = True),
+                                Column('genere1',Integer, ForeignKey('genere.idgeneri'), nullable = False),
+                                Column('genere2',Integer, ForeignKey('genere.idgeneri'), nullable = True),
+                                Column('genere3',Integer, ForeignKey('genere.idgeneri'), nullable = True),
 
         )
 
 attori = Table('attori', metadata,Column('IdAttori',Integer, primary_key = True),
                                 Column('nome',String , nullable = True),
                                 Column('cognome',String , nullable = False),
-                                Column('genere',Integer , ForeignKey('generi.IdGeneri'), nullable = False),
+                                Column('genere',Integer , ForeignKey('generi.idgeneri'), nullable = False),
                                 Column('stato',String, nullable = True),
                                 Column('data_nascita',DATE , nullable = False),
                                 Column('descr',TEXT , nullable = False),
@@ -58,7 +58,7 @@ film = Table('film', metadata,Column('codfilm',Integer, primary_key = True),
                                 Column('titolo',String, nullable = False ),
                                 Column('autore',Integer , ForeignKey('attori.IdAttori'), nullable = False ),
                                 Column('durata',Integer, nullable = False ),
-                                Column('generi',Integer , ForeignKey('generi.IdGeneri'), nullable = True),
+                                Column('generi',Integer , ForeignKey('generi.idgeneri'), nullable = True),
                                 Column('lingua_originale',Boolean, nullable = True )
             )
 
@@ -112,7 +112,7 @@ conn.execute("INSERT INTO generi(genere1,genere2,genere3) VALUES('1',NULL,NULL) 
 
 
 #CAST
-#conn.execute("INSERT INTO cast( nome, cognome, genere, stato, data_nascita, descr) VALUES('Bruce','Wayne','2','USA','1914-10-10','Non ci serve è una macchina da guerra')")
+
 conn.execute("INSERT INTO attori(nome,cognome,genere,stato,data_nascita,descr) VALUES('Bruce','Schetta','1','California','1914-10-10','Se el mejo tocco de oro') ")
 
 #FILM
