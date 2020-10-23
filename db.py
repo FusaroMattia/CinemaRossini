@@ -123,7 +123,7 @@ conn.execute("INSERT INTO film(titolo,autore,durata,generi,lingua_originale) VAL
 conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','20:00:00','97','3') ")
 conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','22:00:00','100','0') ")
 conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','18:00:00','100','0') ")
-conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','16:00:00','100','0') ")
+conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-23','16:00:00','100','0') ")
 
 
 #ACQUISTI
@@ -140,15 +140,15 @@ role_cliente = "SELECT 1 FROM pg_roles WHERE rolname='cliente'"
 
 if role_gestore:
     conn.execute("DROP ROLE gestore ")
-    conn.execute("CREATE ROLE gestore WITH LOGIN PASSWORD '1234' ")
+    conn.execute("CREATE ROLE gestore WITH LOGIN PASSWORD 'ciao' ")
 else:
-    conn.execute("CREATE ROLE gestore WITH LOGIN PASSWORD '1234' ")
+    conn.execute("CREATE ROLE gestore WITH LOGIN PASSWORD 'ciao' ")
 
 if role_cliente:
     conn.execute("DROP ROLE cliente ")
-    conn.execute("CREATE ROLE cliente WITH LOGIN PASSWORD '1234' ")
+    conn.execute("CREATE ROLE cliente WITH LOGIN PASSWORD 'ciao' ")
 else:
-    conn.execute("CREATE ROLE cliente WITH LOGIN PASSWORD '1234' ")
+    conn.execute("CREATE ROLE cliente WITH LOGIN PASSWORD 'ciao' ")
 
 
 

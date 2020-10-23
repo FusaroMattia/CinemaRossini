@@ -16,8 +16,7 @@
 
 {% block content %}
 
-
-<img src="{{url_for('static', filename='{{film[1]}}.jpg')}}" alt="Mia Immagine" style= "width:400px;height:400px;">
+<img src="{{url_for('static', filename='{{str(film[1])}}.jpg')}}" alt="Mia Immagine" style= "width:400px;height:400px;">
 
 
           <h2>{{film[1]}}</h2>
@@ -27,16 +26,20 @@
 
 
 <hr><hr><hr><hr><hr><hr>
+
           <h3>Attori</h3>
 
-          <p>{{film[2]}}</p>
+          <p>{{attore[0]}} {{attore[1]}}</p>
 
 
           <p>La durata del film è di {{film[3]}} minuti</p>
 
 
 
-          <p>Generi : {{generi}}, {{generi[2]}}, {{generi[3]}}</p>
+          <p>Generi :
+              {% for n in generi%}
+                {{n}}</p>
+              {% endfor %}
 
 
 
@@ -47,8 +50,49 @@
     <p>Disponibile in lingua originale: si</p>
 {% else %}
     <p>Disponibile in lingua originale: no</p>
-
 {%endif%}
+
+
+<div class="contenitore">
+       <div class="table">
+          <div class="table-header">
+                  <div class="header__item">Sala </div>
+                  <div class="header__item">Film </div>
+                  <div class="header__item">Data </div>
+                  <div class="header__item">Ora </div>
+                  <div class="header__item">Posti Liberi </div>
+                  <div class="header__item">Posti Occupati </div>
+          </div>
+  <div class="table-content">
+  {% for n in results %}
+        <div class="table-row">
+            <div class="table-data">{{sale[loop.index-1] }}</div>
+
+
+  {% if current_user.is_authenticated :%}
+          <div class="table-data">
+          <form action="/film" method="post" id="form">
+          <input type="hidden" name="film" value="{{n[2]}}">
+          <a href="javascript:{}" onclick="document.getElementById('form').submit(); return false;">{{titoli[loop.index-1] }}</a>
+          </form>
+          </div>
+  {% else: %}
+          <div class="table-data">{{titoli[loop.index-1] }}</div>
+  {% endif%}
+
+
+            <div class="table-data">{{n[3] }}</div>
+            <div class="table-data">{{n[4] }}</div>
+            <div class="table-data">{{n[5] }}</div>
+            <div class="table-data">{{n[6] }}</div>
+    </div>
+  {% endfor  %}
+  </div>
+  </div>
+  </div>
+
+
+<button type="button" onclick="alert('Hello world!')">Prenota</button>
 
 
 

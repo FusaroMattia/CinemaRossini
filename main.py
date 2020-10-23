@@ -11,7 +11,7 @@ cursor = connection.cursor()
 
 @main.route('/')
 def index():
-    query = "SELECT * FROM proiezioni  ORDER BY data  DESC, ora ASC"
+    query = "SELECT * FROM proiezioni WHERE data = CURRENT_DATE ORDER BY data  DESC, ora ASC"
     cursor.execute(query)
     results = cursor.fetchmany(12)
     titoli = []
@@ -29,9 +29,6 @@ def index():
         cursor.execute(query)
         nome_sala = cursor.fetchone()
         sale.extend(nome_sala)
-
-
-
 
     return render_template('index.html', results = results, sale=sale,titoli=titoli)
 
@@ -56,15 +53,43 @@ def film():
        cursor.execute(query)
        nome_film = cursor.fetchone()
 
+       #creo un array con tutti i nomi dei generi che asso poi all HTML
        generi = nome_film[4]
        query = "SELECT * FROM generi WHERE idgeneri = "+str(generi)
        cursor.execute(query)
-       nome_generi = cursor.fetchone()
+       id_generi = cursor.fetchone()
+       id_genere1 = id_generi[1]
+       id_genere2 = id_generi[2]
+       id_genere3 = id_generi[3]
+       generi = [id_genere1, id_genere2, id_genere3]
+       nomi_generi=[]
 
-       genere=nome_generi[1]
-       #query= "SELECT * FROM genere WHERE idgenere = "+str(genere)
+       for n in generi :
+           if n :
+               query= "SELECT titolo FROM genere WHERE idgenere = "+str(n)
+               cursor.execute(query)
+               genere = cursor.fetchone()
+               nome=genere[0]
+               nomi_generi.append(nome)
+
+       #Attori
+       nome
+       id_attore = nome_film[2]
+       query = "SELECT * FROM attori WHERE idattori = "+str(id_attore)
+       cursor.execute(query)
+       query_attore = cursor.fetchone()
+       nome_attore = query_attore[1]
+       cognome_attore = query_attore[2]
+       attore = [nome_attore, cognome_attore]
+
+       #proiezioni
+       query = "SELECT * FROM proiezioni WHERE film = " +str(nome_film[0])+" AND data = CURRENT_DATE ORDER BY data  DESC, ora ASC"
+       cursor.execute(query)
+       query_proiezione = cursor.fetchmany()
 
 
-       return render_template('film.html', film = nome_film, generi = genere)
+
+
+       return render_template('film.html', film = nome_film, generi = nomi_generi, attore = attore, tabella = query_proiezione)
     else:
        return redirect(url_for('main.index'))
