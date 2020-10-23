@@ -23,6 +23,7 @@
                   <div class="header__item">Ora </div>
                   <div class="header__item">Posti Liberi </div>
                   <div class="header__item">Posti Occupati </div>
+                  <div class="header__item">Acquista </div>
           </div>
   <div class="table-content">
   {% for n in results %}
@@ -46,6 +47,11 @@
             <div class="table-data">{{n[4] }}</div>
             <div class="table-data">{{n[5] }}</div>
             <div class="table-data">{{n[6] }}</div>
+            <div class="table-data">
+            <form action="/choosesit" method="post" id="form2">
+            <input type="hidden" name="proiezione" value="{{n[0]}}">
+            <a href="javascript:{}" onclick="document.getElementById('form2').submit(); return false;">ACQUISTA</a>
+            </form></div>
     </div>
   {% endfor  %}
   </div>

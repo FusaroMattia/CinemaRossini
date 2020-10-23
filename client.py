@@ -6,7 +6,7 @@ from flask_user import login_required,UserManager, UserMixin, SQLAlchemyAdapter,
 import sqlite3
 
 client = Blueprint('client', __name__)
-engine = create_engine("postgresql+psycopg2://cliente:1234@localhost/rossini")
+engine = create_engine("postgresql+psycopg2://admin:admin@localhost/rossini")
 
 
 @client.route('/choosesit',  methods=['POST'])
@@ -26,13 +26,47 @@ def choosesit():
 
            query = "SELECT * FROM acquisti WHERE proiezione ="+str(id_proiezione)
            posti = conn.execute(query)
-           lista_posti_occupati = []
-           for row in posti:
-               local_posti_occupati = row[3]
-               lista_posti_occupati.extend(local_posti_occupati)
-
+           num_results = posti.rowcount
+           if int(num_results) == 0:
+               lista_posti_occupati = 0
+           else:
+               lista_posti_occupati = []
+               for row in posti:
+                   print(row[3])
+                   lista_posti_occupati.extend( [ row[3] ])
            trans.commit()
        except:
               trans.rollback()
-              print("rollback")
-    return 0
+              print("rollback choose sit")
+       finally:
+           conn.close()
+    return render_template('choosesit.html',posti_occupati=lista_posti_occupati,liberi=posti_liberi,occupati=posti_occupati,proiezione=id_proiezione)
+
+
+@client.route('/booking',  methods=['POST'])
+#@roles_required('Cliente')
+def booking():
+    if request.method == "POST" :
+       posti_tot = int(request.form.get('postitot'))
+       id_proiezione = request.form.get('proiezione')
+       for x in range(1, posti_tot + 1 ):
+           string = "posto"+str(x)
+           posti_local = request.form.get(string)
+           id = current_user.get_id()
+
+           if posti_local and posti_local != 0 :
+                      conn = engine.connect()
+                      trans = conn.begin()
+                      try:
+                          query = "INSERT INTO acquisti(utente,proiezione,posti) VALUES('"+ str(id) +"','"+ str(id_proiezione) +"', '"+ str(posti_local) +"') "
+                          conn.execute(query)
+                          query = "UPDATE proiezioni SET posti_liberi = posti_liberi-1, posti_occupati = posti_occupati+1  WHERE idproiezione ="+str(id_proiezione)
+                          conn.execute(query)
+                          trans.commit()
+                      except:
+                             trans.rollback()
+                             print("rollback booking")
+                      finally:
+                          conn.close()
+
+    return render_template('booking.html')

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %} HAI PRENOTATO {% endblock %}
+{% block content %}
+{% with messages = get_flashed_messages() %}
+
+{% endwith %}
+
+
+
+<form action="/allbook" method="post" id="form">
+    <a href="javascript:{}" onclick="document.getElementById('form').submit(); return false;">Vedi le prenotazioni </a>
+</form>
+
+
+
+{% endblock %}

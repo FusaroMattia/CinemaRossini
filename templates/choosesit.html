@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %} Scegli Posto {% endblock %}
+{% block content %}
+{% with messages = get_flashed_messages() %}
+
+{% endwith %}
+
+<script>
+var EMPTY = {{liberi}};
+var RESERVED = 0;
+var BOUGHT = {{occupati}};
+var OCCUPATI = {{posti_occupati}};
+
+
+
+function seatplan(){
+document.getElementById("load").setAttribute("disabled", "disabled");
+var seatplan = document.getElementById("seatplan");
+
+var linea = (EMPTY + BOUGHT)/10
+var tot_linee = 1;
+var posto_linea_html,linea_html,label, content;
+var position = 1;
+while (tot_linee <= linea) {
+  linea_html= document.createElement("div");
+  linea_html.setAttribute("style", "display:flex;");
+  linea_html.className = "linee";
+
+
+
+  for(position; position <= (10*tot_linee); position++){
+        content = document.createElement("div");
+        content.className = "group";
+
+
+        posto_linea_html = document.createElement("input");
+        string = "posto"+position
+        posto_linea_html.setAttribute("type", "checkbox");
+        posto_linea_html.setAttribute("id",  string);
+        posto_linea_html.setAttribute("name", string);
+        posto_linea_html.setAttribute("value",position);
+        posto_linea_html.setAttribute("style", "zoom:2;");
+
+        label = document.createElement("label");
+        label.innerHTML = position;
+        label.setAttribute("for", string);
+
+        content.appendChild(label);
+        content.appendChild(posto_linea_html);
+
+        linea_html.appendChild(content);
+  }
+  seatplan.appendChild(linea_html);
+tot_linee++;
+}
+
+for (var i = 0; i < OCCUPATI.length; i++) {
+    s = "posto"+OCCUPATI[i];
+    var elem = document.getElementById(s);
+    elem.disabled = true;
+    elem.setAttribute("value", "0");
+
+}
+
+}
+
+</script>
+
+<form action="/booking" method="post">
+		<div>
+      <input type="hidden" name="postitot" value="{{liberi + occupati}}">
+      <input type="hidden" name="proiezione" value="{{proiezione}}">
+      <button onclick="seatplan()" id="load">Carica posti</button>
+			<button type="submit">Acquista i posti</button>
+		</div>
+
+    <div class="seat">
+            <div id="seatplan">
+
+            </div>
+        </div>
+</form>
+<style>
+#seatplan{
+  position: relative;
+  left: 10%;
+  width: 80%;
+  height: 50vw;
+  top: 25%;
+}
+.linee{
+  position: relative;
+    width: 100%;
+}
+.seat{
+  position: absolute;
+    left: 0%;
+    top: 6vw;
+    width: 100%;
+    height: 50%;
+    display: inline-table;
+}
+form{
+  position: absolute;
+    width: 100%;
+    top: 11vw;
+    left: 0%;
+    align-items: center;
+    text-align: center;
+}
+
+input, label {
+    display:block;
+}
+.group{
+  display: inline-block;
+      text-align: center;
+      margin-left: 5.7vw;
+}
+</style>
+
+
+
+{% endblock %}
