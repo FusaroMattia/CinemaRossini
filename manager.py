@@ -7,8 +7,7 @@ import sqlite3
 
 manager = Blueprint('manager', __name__)
 engine = create_engine("postgresql+psycopg2://admin:admin@localhost/rossini")
-conn = engine.connect()
-trans = conn.begin()
+
 
 @manager.route('/addfilm',  methods=['POST'])
 #@roles_required('Gestore')
@@ -28,6 +27,9 @@ def addfilm_post():
            tot_generi = tot_generi + 1
 
        lingua_originale_film = request.form.get('lingua_originale')
+
+       conn = engine.connect()
+       trans = conn.begin()
        try:
            if tot_generi == 1:
                query = "INSERT INTO generi(genere1) VALUES('"+str(genere_obbligatorio_film)+"') RETURNING *"
@@ -35,22 +37,25 @@ def addfilm_post():
                query = "INSERT INTO generi(genere1,genere2) VALUES('"+str(genere_obbligatorio_film)+"','"+str(genere_opzionale1_film)+"') RETURNING *"
            else:
                query = "INSERT INTO generi(genere1,genere2,genere3) VALUES('"+str(genere_obbligatorio_film)+"','"+str(genere_opzionale1_film)+"','"+str(genere_opzionale2_film)+"') RETURNING *"
+
            result = conn.execute(query)
            new_id = result.fetchone()
            id_generi = new_id[0]
+
            query = "INSERT INTO film(titolo,autore,durata,generi,lingua_originale) VALUES('"+str(titolo_film)+"','"+str(autore_film)+"','"+str(durata_film)+"','"+str(id_generi)+"','"+str(lingua_originale_film)+"')"
            conn.execute(query)
            trans.commit()
        except:
               trans.rollback()
               print("rollback")
-
+       conn.close()
     return redirect(url_for("main.index"))
 
 @manager.route('/addfilm')
 #@roles_required('Gestore')
 def addfilm():
     if current_user.is_authenticated :
+        conn = engine.connect()
         query = "SELECT idgenere,titolo FROM genere  ORDER BY idgenere  ASC"
         generi = conn.execute(query)
         generi_html = []
@@ -64,11 +69,7 @@ def addfilm():
         for row in registi:
             local_registi = [ [row[0],row[1]] ]
             registi_html.extend(local_registi)
-
-
-
-
-
+        conn.close()
         return render_template('addfilm.html',generi=generi_html,registi=registi_html)
     else:
         return redirect(url_for("main.profile"))
@@ -82,6 +83,8 @@ def addevent_post():
        data = request.form.get('data')
        ora = request.form.get('ora')
 
+       conn = engine.connect()
+       trans = conn.begin()
        try:
            query = "SELECT * FROM sale  WHERE nsala ="+str(sala)
            result = conn.execute(query)
@@ -93,7 +96,7 @@ def addevent_post():
        except:
               trans.rollback()
               print("rollback")
-
+       conn.close()
     return redirect(url_for("main.index"))
 
 
@@ -101,6 +104,8 @@ def addevent_post():
 #@roles_required('Gestore')
 def addevent():
     if current_user.is_authenticated :
+        conn = engine.connect()
+        trans = conn.begin()
         query = "SELECT nsala,nome FROM sale  ORDER BY nsala  ASC"
         sale = conn.execute(query)
         sale_html = []
@@ -114,11 +119,7 @@ def addevent():
         for row in film:
             local_film = [ [row[0],row[1]] ]
             film_html.extend(local_film)
-
-
-
-
-
+        conn.close()
         return render_template('addevent.html',sale=sale_html,film=film_html)
     else:
         return redirect(url_for("main.profile"))
