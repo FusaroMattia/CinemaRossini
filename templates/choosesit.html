@@ -10,25 +10,32 @@ var EMPTY = {{liberi}};
 var RESERVED = 0;
 var BOUGHT = {{occupati}};
 var OCCUPATI = {{posti_occupati}};
+var TOT = EMPTY + BOUGHT;
+switch (TOT) {
+  case 50: SET = 10;break;
+  case 100: SET = 20;break;
+  case 150: SET = 15;break;
+  case 200: SET = 20;break;
+}
 
 
 
 function seatplan(){
-document.getElementById("load").setAttribute("disabled", "disabled");
 var seatplan = document.getElementById("seatplan");
 
-var linea = (EMPTY + BOUGHT)/10
+
+var linea = (EMPTY + BOUGHT)/SET
 var tot_linee = 1;
 var posto_linea_html,linea_html,label, content;
 var position = 1;
 while (tot_linee <= linea) {
   linea_html= document.createElement("div");
-  linea_html.setAttribute("style", "display:flex;");
+  linea_html.setAttribute("style", "#display:flex;");
   linea_html.className = "linee";
 
 
 
-  for(position; position <= (10*tot_linee); position++){
+  for(position; position <= (SET*tot_linee); position++){
         content = document.createElement("div");
         content.className = "group";
 
@@ -39,7 +46,7 @@ while (tot_linee <= linea) {
         posto_linea_html.setAttribute("id",  string);
         posto_linea_html.setAttribute("name", string);
         posto_linea_html.setAttribute("value",position);
-        posto_linea_html.setAttribute("style", "zoom:2;");
+        posto_linea_html.setAttribute("style", "zoom:3;");
 
         label = document.createElement("label");
         label.innerHTML = position;
@@ -66,20 +73,24 @@ for (var i = 0; i < OCCUPATI.length; i++) {
 
 </script>
 
+<body onload="seatplan()">
 <form action="/booking" method="post">
-		<div>
-      <input type="hidden" name="postitot" value="{{liberi + occupati}}">
-      <input type="hidden" name="proiezione" value="{{proiezione}}">
-      <button onclick="seatplan()" id="load">Carica posti</button>
-			<button type="submit">Acquista i posti</button>
-		</div>
 
+<div>
     <div class="seat">
-            <div id="seatplan">
+        <div id="seatplan"></div>
+    </div>
+     <div>
+        <input type="hidden" name="postitot" value="{{liberi + occupati}}">
+        <input type="hidden" name="proiezione" value="{{proiezione}}">
+    		<button type="submit">Acquista i posti</button>
+    </div>
+</div>
 
-            </div>
-        </div>
 </form>
+
+</body>
+
 <style>
 #seatplan{
   position: relative;
@@ -87,6 +98,7 @@ for (var i = 0; i < OCCUPATI.length; i++) {
   width: 80%;
   height: 50vw;
   top: 25%;
+  align-items: center;
 }
 .linee{
   position: relative;
@@ -103,7 +115,8 @@ for (var i = 0; i < OCCUPATI.length; i++) {
 form{
   position: absolute;
     width: 100%;
-    top: 11vw;
+    height: 55vw;
+    top: 14vw;
     left: 0%;
     align-items: center;
     text-align: center;
@@ -115,7 +128,6 @@ input, label {
 .group{
   display: inline-block;
       text-align: center;
-      margin-left: 5.7vw;
 }
 </style>
 

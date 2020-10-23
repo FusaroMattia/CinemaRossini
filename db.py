@@ -12,13 +12,15 @@ create_database(engine.url)
 metadata = MetaData()
 
 
-ruoli = Table('ruoli', metadata,Column('id',Integer, primary_key = True),
-                                Column('nome',String , nullable = False )
+
+
+ruolo = Table('ruolo', metadata,Column('id',Integer, primary_key = True),
+                                Column('name',String , nullable = False, unique=True )
             )
 
 
 utenti = Table('utenti', metadata,Column('id',Integer, primary_key = True),
-                                Column('email',String , nullable = False ),
+                                Column('email',String , nullable = False , unique=True),
                                 Column('password',String , nullable = False ),
                                 Column('name',String , nullable = False ),
                                 Column('cognome',String , nullable = False ),
@@ -27,10 +29,14 @@ utenti = Table('utenti', metadata,Column('id',Integer, primary_key = True),
                                 Column('data_nascita',DATE , nullable = False ),
                                 Column('sesso',String, nullable = False ) ,
                                 Column('riduzione',Integer , nullable = False ) ,
-                                Column('gestore',Integer )
+                                Column('gestore',Integer , nullable = False ) ,
+                                Column('roles',Integer, ForeignKey('ruoli.id') , nullable = True)
             )
 
-
+ruoli = Table('ruoli', metadata,Column('id',Integer, primary_key = True),
+                                Column('user_id',Integer , ForeignKey('utenti.id') , nullable = False ),
+                                Column('role_id',Integer , ForeignKey('ruolo.id') ,nullable = False )
+            )
 
 
 
@@ -86,24 +92,51 @@ metadata.create_all(engine)
 
 conn = engine.connect()
 
-#RUOLI
-conn.execute("INSERT INTO ruoli(nome) VALUES('Admin') ")
-conn.execute("INSERT INTO ruoli(nome) VALUES('Gestore') ")
-conn.execute("INSERT INTO ruoli(nome) VALUES('Cliente') ")
+conn.execute("ALTER TABLE acquisti ADD CONSTRAINT posto_unico UNIQUE (proiezione, posti);")
+
+
+#RUOLO
+conn.execute("INSERT INTO ruolo(name) VALUES('Admin') ")
+conn.execute("INSERT INTO ruolo(name) VALUES('Gestore') ")
+conn.execute("INSERT INTO ruolo(name) VALUES('Cliente') ")
+
 
 
 #UTENTI
-conn.execute("INSERT INTO utenti(email,password,name,cognome,citta,stato,data_nascita,sesso,riduzione,gestore) VALUES('mattiafusaro8@gmail.com','sha256$REOk6wJn$e46761b392ec91074c032623a3fb02ab89bfd3d1b3cf9ad6b575d9d7582e8d37','Mattia','Fusaro','Venezia','Veneto','1999-09-09','M','10','1')  ")
+conn.execute("INSERT INTO utenti(id,email,password,name,cognome,citta,stato,data_nascita,sesso,riduzione,gestore) VALUES('98','mattiafusaro8@gmail.com','1234','Mattia','Fusaro','Venezia','Veneto','1999-09-09','male','0','1')  ")
+#conn.execute("INSERT INTO utenti(id,email,password,name,cognome,citta,stato,data_nascita,sesso,riduzione) VALUES('99','mattia@gmail.com','1234','Tia','Fusaro','Venezia','Veneto','1999-09-09','male','0')  ")
+
+
+#ruoli
+#conn.execute("INSERT INTO ruoli(id,user_id,role_id) VALUES('0','98','1') ")
+#conn.execute("INSERT INTO ruoli(id,user_id,role_id) VALUES('1','99','2') ")
+
+#conn.execute("UPDATE utenti SET roles = 0 WHERE id = 0")
+#conn.execute("UPDATE utenti SET roles = 1 WHERE id = 1")
 
 #SALE
 conn.execute("INSERT INTO sale(nome,posti_totali,posti_disabili,prezzo_posti) VALUES('Dedalo','100','7','9') ")
 conn.execute("INSERT INTO sale(nome,posti_totali,posti_disabili,prezzo_posti) VALUES('Icaro','200','3','7') ")
 conn.execute("INSERT INTO sale(nome,posti_totali,posti_disabili,prezzo_posti) VALUES('Ulisse','50','1','12') ")
-conn.execute("INSERT INTO sale(nome,posti_totali,posti_disabili,prezzo_posti) VALUES('Percy','125','5','8') " )
+conn.execute("INSERT INTO sale(nome,posti_totali,posti_disabili,prezzo_posti) VALUES('Percy','150','5','8') " )
 
 #GENERE
-conn.execute("INSERT INTO genere(titolo,descr) VALUES('Azione','Film epico con sparatorie ed uccisioni')" )
-conn.execute("INSERT INTO genere(titolo,descr) VALUES('Romantico','MlMl')" )
+conn.execute("INSERT INTO genere(titolo,descr) VALUES('Animazione',' ')" )
+conn.execute("INSERT INTO genere(titolo,descr) VALUES('Avventura',' ')" )
+conn.execute("INSERT INTO genere(titolo,descr) VALUES('Biografico',' ')" )
+conn.execute("INSERT INTO genere(titolo,descr) VALUES('Commedia',' ')" )
+conn.execute("INSERT INTO genere(titolo,descr) VALUES('Documentario',' ')" )
+conn.execute("INSERT INTO genere(titolo,descr) VALUES('Pornografico',' ')" )
+conn.execute("INSERT INTO genere(titolo,descr) VALUES('Erotico',' ')" )
+conn.execute("INSERT INTO genere(titolo,descr) VALUES('Fantascienza',' ')" )
+conn.execute("INSERT INTO genere(titolo,descr) VALUES('Fanstasy',' ')" )
+conn.execute("INSERT INTO genere(titolo,descr) VALUES('Guerra',' ')" )
+conn.execute("INSERT INTO genere(titolo,descr) VALUES('Horror',' ')" )
+conn.execute("INSERT INTO genere(titolo,descr) VALUES('Musical',' ')" )
+conn.execute("INSERT INTO genere(titolo,descr) VALUES('Storico',' ')" )
+conn.execute("INSERT INTO genere(titolo,descr) VALUES('Thriller',' ')" )
+conn.execute("INSERT INTO genere(titolo,descr) VALUES('Western',' ')" )
+
 
 
 #GENERI
@@ -120,7 +153,7 @@ conn.execute("INSERT INTO film(titolo,autore,durata,generi,lingua_originale) VAL
 conn.execute("INSERT INTO film(titolo,autore,durata,generi,lingua_originale) VALUES('Transformers','1','200','1','1') ")
 
 #PROIEZIONI
-conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','20:00:00','97','3') ")
+conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','20:00:00','100','0') ")
 conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','22:00:00','100','0') ")
 conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','18:00:00','100','0') ")
 conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','16:00:00','100','0') ")
@@ -159,6 +192,16 @@ else:
 
 #PERMESSI
 #SELECT
+conn.execute("GRANT CONNECT ON DATABASE rossini TO gestore")
+conn.execute("GRANT CONNECT ON DATABASE rossini TO cliente")
+
+conn.execute("GRANT USAGE ON SCHEMA public TO gestore")
+conn.execute("GRANT USAGE ON SCHEMA public TO cliente")
+
+conn.execute("GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO gestore")
+conn.execute("GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO gestore")
+
+
 conn.execute("GRANT SELECT ON film TO PUBLIC; GRANT SELECT ON proiezioni TO PUBLIC; GRANT SELECT ON sale TO PUBLIC; GRANT SELECT ON acquisti TO gestore; GRANT SELECT ON utenti TO gestore; GRANT SELECT ON attori TO gestore; GRANT SELECT ON generi TO gestore WITH GRANT OPTION; GRANT SELECT ON genere TO gestore WITH GRANT OPTION;")
 
 #INSERT

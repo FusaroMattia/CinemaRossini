@@ -1,8 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request,flash
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user, AnonymousUserMixin
-#from datetime import datetime
-from .models import User
+from .models import User,Role,UserRoles
+#from .role import gestore,cliente
 from . import db
 
 auth = Blueprint('auth', __name__)
@@ -17,9 +16,9 @@ def login_post():
 
         user = User.query.filter_by(email=email).first()
 
-        if not user or not check_password_hash(user.password, password):
-            flash('Please check your login details and try again.')# + email + password +'     '+ user.password +'     '+ generate_password_hash(password, method='sha256'))
-            return redirect(url_for('auth.login')) # if the user doesn't exist or password is wrong, reload the page
+        if not user or not (user.password == password):
+            flash('Please check your login details and try again.')
+            return redirect(url_for('auth.login'))
 
         login_user(user, remember=remember)
         return redirect(url_for('main.profile'))
@@ -63,8 +62,8 @@ def signup_post():
         return redirect(url_for('auth.signup'))
 
 
-    new_user = User(email=email, name=name, password=generate_password_hash(password, method='sha256'),cognome=cognome, citta=citta, stato=stato, data_nascita=data,sesso=sesso,riduzione="0",gestore="0")
-
+    new_user = User(email=email, name=name, password=password,cognome=cognome, citta=citta, stato=stato, data_nascita=data,sesso=sesso,riduzione="0", gestore = "0")
+    #new_user.roles = [Role(id='3',name='Cliente')]
     # add the new user to the database
     db.session.add(new_user)
     db.session.commit()

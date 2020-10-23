@@ -6,13 +6,13 @@ from flask_user import login_required,UserManager, UserMixin, SQLAlchemyAdapter,
 import sqlite3
 
 manager = Blueprint('manager', __name__)
-engine = create_engine("postgresql+psycopg2://admin:admin@localhost/rossini")
+engine = create_engine("postgresql+psycopg2://gestore:ciao@localhost/rossini")
 
 
 @manager.route('/addfilm',  methods=['POST'])
 #@roles_required('Gestore')
 def addfilm_post():
-    if request.method == "POST" :
+    if current_user.gestore == 1 and request.method == "POST" :
        titolo_film = request.form.get('titolo')
        autore_film = request.form.get('autore')
        durata_film = request.form.get('durata')
@@ -41,9 +41,10 @@ def addfilm_post():
            result = conn.execute(query)
            new_id = result.fetchone()
            id_generi = new_id[0]
-
+           print("ok1")
            query = "INSERT INTO film(titolo,autore,durata,generi,lingua_originale) VALUES('"+str(titolo_film)+"','"+str(autore_film)+"','"+str(durata_film)+"','"+str(id_generi)+"','"+str(lingua_originale_film)+"')"
            conn.execute(query)
+           print("ok2")
            trans.commit()
        except:
               trans.rollback()
@@ -54,7 +55,7 @@ def addfilm_post():
 @manager.route('/addfilm')
 #@roles_required('Gestore')
 def addfilm():
-    if current_user.is_authenticated :
+    if current_user.is_authenticated and current_user.gestore == 1 :
         conn = engine.connect()
         query = "SELECT idgenere,titolo FROM genere  ORDER BY idgenere  ASC"
         generi = conn.execute(query)
@@ -77,7 +78,7 @@ def addfilm():
 @manager.route('/addevent',  methods=['POST'] )
 #@roles_required('Gestore')
 def addevent_post():
-    if request.method == "POST" :
+    if current_user.gestore == 1 and request.method == "POST" :
        sala = request.form.get('sala')
        film = request.form.get('film')
        data = request.form.get('data')
@@ -101,9 +102,9 @@ def addevent_post():
 
 
 @manager.route('/addevent')
-#@roles_required('Gestore')
+#roles_required('Gestore')
 def addevent():
-    if current_user.is_authenticated :
+    if current_user.is_authenticated and current_user.gestore == 1:
         conn = engine.connect()
         trans = conn.begin()
         query = "SELECT nsala,nome FROM sale  ORDER BY nsala  ASC"
@@ -127,4 +128,7 @@ def addevent():
 @manager.route('/statistic')
 #@roles_required('Gestore')
 def statistic():
+    if current_user.is_authenticated and current_user.gestore == 1:
+        return 0
+
     return 0

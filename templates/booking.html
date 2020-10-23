@@ -5,11 +5,16 @@
 
 {% endwith %}
 
-
+{% if error == "rollback" %}
+      <h3> ERRORE NELLA PRENOTAZIONE  </h3>
+{% else %}
+      <h3> PRENOTAZIONE EFFETTUATA </h3>
+{% endif %}
 
 <form action="/allbook" method="post" id="form">
     <a href="javascript:{}" onclick="document.getElementById('form').submit(); return false;">Vedi le prenotazioni </a>
 </form>
+
 
 
 

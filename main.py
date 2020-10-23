@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, request,flash,session
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user, AnonymousUserMixin
+from flask_login import LoginManager, login_user, logout_user, current_user, AnonymousUserMixin
 from . import db
 from sqlalchemy import create_engine, text
 from flask_user import login_required,UserManager, UserMixin, SQLAlchemyAdapter,roles_required
@@ -25,7 +25,7 @@ def index():
         titolo_film = cursor.fetchone()
         titoli.extend(titolo_film)
 
-        query = "SELECT nome FROM sale WHERE sale.NSala = "+str(sala)
+        query = "SELECT nome FROM sale WHERE nsala = "+str(sala)
         cursor.execute(query)
         nome_sala = cursor.fetchone()
         sale.extend(nome_sala)
@@ -48,8 +48,9 @@ def profile():
         return redirect(url_for('auth.login'))
 
 @main.route('/film' , methods=['POST'])
+#@roles_required('Cliente')
 def film():
-    if request.method == "POST" :
+    if current_user.gestore == 0 and request.method == "POST" :
 
        film = request.form.get('film')
        query = "SELECT * FROM film WHERE codfilm = "+str(film)
