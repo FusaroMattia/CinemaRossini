@@ -32,7 +32,7 @@ def index():
         sala = result.fetchone()
         proiezioni_nome_sala = sala[0]
 
-        cell = [n[0],proiezioni_nsala,proiezioni_codfilm,proiezioni_titolo,proiezioni_nome_sala,n[3],n[4],n[5],n[6]]
+        cell = [n[0],proiezioni_nsala,proiezioni_codfilm,proiezioni_nome_sala,proiezioni_titolo,n[3],n[4],n[5],n[6]]
         proiezioni.append(cell)
 
 
@@ -66,8 +66,11 @@ def film():
     if current_user.gestore == 0 and request.method == "POST" :
        film = request.form.get('film')
        conn = engine.connect()
+       if film > 0 :
+           query = "SELECT * FROM film WHERE codfilm = '"+ str(film) + "'"
+       else:
+           query = "SELECT * FROM film WHERE titolo = '"+ str(film) + "'"
 
-       query = "SELECT * FROM film WHERE codfilm = "+str(film)
        results = conn.execute(query)
        record_film = results.fetchone()
 

@@ -15,13 +15,30 @@
 {% block content %}
 
 {% if current_user.is_authenticated and current_user.gestore == 0:%}
-<select class="mdb-select md-form colorful-select dropdown-primary" searchable="Digita qui" style="position: absolute;top: 6vw;right: 15vw;">
-      {% for n in tutti%}
-      <option value="{{n[0]}}">{{n[1]}}</option>
-      {% endfor  %}
-</select>
+<script>
+$(document).ready(function () {
+    $('select').selectize({
+        sortField: 'text'
+    });
+});
+</script>
 
-<label class="mdb-main-label">Cerca un film</label>
+<div style="position: absolute;top: 6vw;right: 15vw; z-index:10000">
+  <form action="/film" method="post">
+    <label class="mdb-main-label">Cerca un film</label>
+        <input list="films" name="film">
+              <datalist id="films">
+                    <option value="0" disabled selected>Cerca un film</option>
+                          {% for n in tutti%}
+                                <option value="{{n[1]}}"></option>
+                          {% endfor  %}
+              </datalist>
+        <input type="submit">
+  </form>
+</div>
+
+
+
 
 
 {% endif%}
@@ -49,7 +66,7 @@
   {% if current_user.is_authenticated:%}
           <div class="table-data">
           <form action="/film" method="post" id="form">
-          <input type="hidden" name="film" value="{{n[2]}}">
+          <input type="hidden" type="number" name="film" value="{{n[2]}}">
           <a href="javascript:{}" onclick="document.getElementById('form').submit(); return false;">{{n[4]}}</a>
           </form>
           </div>
