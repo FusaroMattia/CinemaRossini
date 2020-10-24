@@ -10,7 +10,8 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(150))
     name = db.Column(db.String(100))
 
-    gestore = db.Column(db.Integer,db.ForeignKey('ruoli.id', ondelete='RESTRICT'), server_default='2')
+    gestore = db.Column(db.Integer)
+    roles = db.relationship('Role', secondary='ruoli',backref=db.backref('users', lazy='dynamic'))
 
     cognome = db.Column(db.String(100))
     citta = db.Column(db.String(100))
@@ -20,7 +21,7 @@ class User(UserMixin, db.Model):
     riduzione = db.Column(db.Integer)
 
 
-    def __init__(self, email, name, password,cognome,citta,stato,data_nascita,sesso,riduzione,gestore):
+    def __init__(self, email, name, password,cognome,citta,stato,data_nascita,sesso,riduzione,     gestore):
             self.name = name
             self.email = email
             self.password = password
@@ -30,10 +31,22 @@ class User(UserMixin, db.Model):
             self.data_nascita = data_nascita
             self.sesso = sesso
             self.riduzione = riduzione
+
             self.gestore = gestore
 
 
+
 class Role(db.Model):
-    __tablename__ = "ruoli"
+    __tablename__ = "ruolo"
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True)
+
+
+# Define UserRoles model
+class UserRoles(db.Model):
+    __tablename__ = "ruoli"
+    __table_args__ = {'extend_existing': True}
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('utenti.id', ondelete='CASCADE'))
+    role_id = db.Column(db.Integer(), db.ForeignKey('ruolo.id', ondelete='CASCADE'))

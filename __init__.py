@@ -13,6 +13,7 @@ def create_app():
     app.config["CSRF_ENABLED"]=True
     app.config["USER_ENABLE_EMAIL"]=False
     app.config['SECRET_KEY'] = "1234"
+    app.config['USER_LOGIN_TEMPLATE'] = 'login.html'
 
     db.init_app(app)
 
@@ -25,6 +26,8 @@ def create_app():
 
     db_adapter = SQLAlchemyAdapter(db,User)
     user_manager = UserManager(db_adapter,app)
+
+    #from .role import Cliente,Gestore
 
     @login_manager.user_loader
     def load_user(user_id):
