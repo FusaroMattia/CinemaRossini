@@ -1,15 +1,15 @@
 from flask import Blueprint, render_template, redirect, url_for, request,flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user, AnonymousUserMixin
 from .models import User,Role,UserRoles
-#from .role import gestore,cliente
 from . import db
 
 auth = Blueprint('auth', __name__)
 
 
 @auth.route('/login', methods=['POST'])
-def login_post():
+def login():
      if request.method == "POST" :
+        print("dentro")
         email = request.form.get('email')
         password = request.form.get('password')
         remember = True if request.form.get('remember') else False
@@ -18,6 +18,7 @@ def login_post():
 
         if not user or not (user.password == password):
             flash('Please check your login details and try again.')
+            print("1")
             return redirect(url_for('auth.login'))
 
         login_user(user, remember=remember)
@@ -28,11 +29,12 @@ def login_post():
             return redirect(url_for("main.profile"))
         else:
             flash( "ERRORE")
+            print("2")
             return redirect(url_for("auth.login"))
 
 
 @auth.route('/login')
-def login():
+def login_post():
     if current_user.is_authenticated :
         flash( "Alredy Logged in")
         return redirect(url_for("main.profile"))

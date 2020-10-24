@@ -104,7 +104,7 @@ conn.execute("INSERT INTO ruolo(name) VALUES('Cliente') ")
 
 #UTENTI
 conn.execute("INSERT INTO utenti(id,email,password,name,cognome,citta,stato,data_nascita,sesso,riduzione,gestore) VALUES('98','mattiafusaro8@gmail.com','1234','Mattia','Fusaro','Venezia','Veneto','1999-09-09','male','0','1')  ")
-#conn.execute("INSERT INTO utenti(id,email,password,name,cognome,citta,stato,data_nascita,sesso,riduzione) VALUES('99','mattia@gmail.com','1234','Tia','Fusaro','Venezia','Veneto','1999-09-09','male','0')  ")
+conn.execute("INSERT INTO utenti(id,email,password,name,cognome,citta,stato,data_nascita,sesso,riduzione,gestore) VALUES('99','mattia@gmail.com','1234','Tia','Fusaro','Venezia','Veneto','1999-09-09','male','0','0')  ")
 
 
 #ruoli
@@ -202,16 +202,18 @@ conn.execute("GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO gestore")
 conn.execute("GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO gestore")
 
 
-conn.execute("GRANT SELECT ON film TO PUBLIC; GRANT SELECT ON proiezioni TO PUBLIC; GRANT SELECT ON sale TO PUBLIC; GRANT SELECT ON acquisti TO gestore; GRANT SELECT ON utenti TO gestore; GRANT SELECT ON attori TO gestore; GRANT SELECT ON generi TO gestore WITH GRANT OPTION; GRANT SELECT ON genere TO gestore WITH GRANT OPTION;")
+conn.execute("GRANT SELECT ON film TO PUBLIC; GRANT SELECT ON proiezioni TO PUBLIC; GRANT SELECT ON sale TO PUBLIC; GRANT SELECT ON acquisti TO gestore; GRANT SELECT ON utenti TO PUBLIC; GRANT SELECT ON attori TO gestore; GRANT SELECT ON generi TO gestore WITH GRANT OPTION; GRANT SELECT ON genere TO gestore WITH GRANT OPTION;")
 
 #INSERT
 conn.execute("GRANT INSERT ON genere TO gestore WITH GRANT OPTION; GRANT INSERT ON generi TO gestore WITH GRANT OPTION; GRANT INSERT ON attori TO gestore; GRANT INSERT ON film TO gestore; GRANT INSERT ON sale TO gestore; GRANT INSERT ON proiezioni TO gestore;")
+conn.execute("GRANT INSERT ON acquisti TO cliente; ")
 
 #UPDATE
 conn.execute("GRANT UPDATE ON genere TO gestore WITH GRANT OPTION; GRANT UPDATE ON generi TO gestore WITH GRANT OPTION; GRANT UPDATE ON attori TO gestore; GRANT UPDATE ON film TO gestore; GRANT UPDATE ON sale TO gestore; GRANT UPDATE ON proiezioni TO gestore; GRANT UPDATE ON acquisti TO gestore; GRANT UPDATE ON utenti TO gestore;")
-
+conn.execute("GRANT UPDATE ON proiezioni TO cliente;")
 #DELETE
 conn.execute("GRANT DELETE ON genere TO gestore WITH GRANT OPTION; GRANT DELETE ON generi TO gestore WITH GRANT OPTION; GRANT DELETE ON utenti TO gestore; GRANT DELETE ON attori TO gestore; GRANT DELETE ON film TO gestore; GRANT DELETE ON sale TO gestore; GRANT DELETE ON proiezioni TO gestore; GRANT DELETE ON acquisti TO gestore;")
+conn.execute("GRANT DELETE ON acquisti TO cliente;")
 
 
 

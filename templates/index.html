@@ -13,7 +13,20 @@
 
 
 {% block content %}
-<p> QUI ABBIAMO LA LISTA DI FILM IN PROGRAMMA</p>
+
+{% if current_user.is_authenticated and current_user.gestore == 0:%}
+<select class="mdb-select md-form colorful-select dropdown-primary" searchable="Digita qui" style="position: absolute;top: 6vw;right: 15vw;">
+      {% for n in tutti%}
+      <option value="{{n[0]}}">{{n[1]}}</option>
+      {% endfor  %}
+</select>
+
+<label class="mdb-main-label">Cerca un film</label>
+
+
+{% endif%}
+
+
 <div class="contenitore">
        <div class="table">
           <div class="table-header">
@@ -30,25 +43,25 @@
   <div class="table-content">
   {% for n in results %}
         <div class="table-row">
-            <div class="table-data">{{sale[loop.index-1] }}</div>
+            <div class="table-data">{{n[3]}}</div>
 
 
   {% if current_user.is_authenticated:%}
           <div class="table-data">
           <form action="/film" method="post" id="form">
           <input type="hidden" name="film" value="{{n[2]}}">
-          <a href="javascript:{}" onclick="document.getElementById('form').submit(); return false;">{{titoli[loop.index-1] }}</a>
+          <a href="javascript:{}" onclick="document.getElementById('form').submit(); return false;">{{n[4]}}</a>
           </form>
           </div>
   {% else: %}
-          <div class="table-data">{{titoli[loop.index-1] }}</div>
+          <div class="table-data">{{ n[4] }}</div>
   {% endif%}
 
 
-            <div class="table-data">{{n[3] }}</div>
-            <div class="table-data">{{n[4] }}</div>
             <div class="table-data">{{n[5] }}</div>
             <div class="table-data">{{n[6] }}</div>
+            <div class="table-data">{{n[7] }}</div>
+            <div class="table-data">{{n[8] }}</div>
             {% if current_user.is_authenticated and current_user.gestore == 0:%}
 
 
