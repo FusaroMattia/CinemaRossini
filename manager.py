@@ -129,6 +129,17 @@ def addevent():
 #@roles_required('Gestore')
 def statistic():
     if current_user.is_authenticated and current_user.gestore == 1:
+        #se risultati molti:
+        #film = conn.execute(query)
+        #film_html = []
+        #for row in film:
+        #    local_film = [ [row[0],row[1]] ]   QUI METTI TUTTI I CAMPI CHE TI SERVONO
+        #    film_html.extend(local_film)
+        #se un solo risultato:
+        #   result = conn.execute(query)
+        #   sale_row = result.fetchone()
+        #   n_posti = sale_row[2]
+
         return 0
 
     return 0

@@ -11,11 +11,21 @@
       <h3> PRENOTAZIONE EFFETTUATA </h3>
 {% endif %}
 
-<form action="/allbook" method="post" id="form">
-    <a href="javascript:{}" onclick="document.getElementById('form').submit(); return false;">Vedi le prenotazioni </a>
-</form>
 
 
+    <a href="/allbook" >Vedi le prenotazioni </a>
+
+
+<style>
+form{
+  position: absolute;
+    width: 100%;
+    top: 11vw;
+    left: 0%;
+    align-items: center;
+    text-align: center;
+}
+</style>
 
 
 {% endblock %}

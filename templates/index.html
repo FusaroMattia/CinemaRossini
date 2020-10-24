@@ -15,28 +15,39 @@
 {% block content %}
 
 {% if current_user.is_authenticated and current_user.gestore == 0:%}
-<script>
-$(document).ready(function () {
-    $('select').selectize({
-        sortField: 'text'
-    });
-});
-</script>
 
 <div style="position: absolute;top: 6vw;right: 15vw; z-index:10000">
-  <form action="/film" method="post">
+  <form action="/film" method="post" id="formsearch">
     <label class="mdb-main-label">Cerca un film</label>
-        <input list="films" name="film">
-              <datalist id="films">
+        <input list="items" name="film" type="text">
+              <datalist id="items">
                     <option value="0" disabled selected>Cerca un film</option>
                           {% for n in tutti%}
-                                <option value="{{n[1]}}"></option>
+                                <option value="{{n[1]}}">{{n[1]}}</option>
                           {% endfor  %}
               </datalist>
-        <input type="submit">
   </form>
 </div>
+<script>
+document.querySelector('input[list="items"]').addEventListener('input', onInput);
 
+function onInput(e) {
+   var input = e.target,
+       val = input.value;
+       list = input.getAttribute('list'),
+       options = document.getElementById(list).childNodes;
+
+  for(var i = 0; i < options.length; i++) {
+    if(options[i].innerText === val) {
+      // An item was selected from the list!
+      // yourCallbackHere()
+      document.getElementById('formsearch').submit(); return false;
+      //alert('item selected: ' + val);
+      //break;
+    }
+  }
+}
+</script>
 
 
 

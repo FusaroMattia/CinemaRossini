@@ -19,13 +19,13 @@
 <div class="navbar-nav-scroll">
 <ul class="navbar-nav bd-navbar-nav flex-row">
   <li class="nav-item">
-    <a class="nav-link " href="/" onclick="nav('home')" id="home" >Home</a>
+    <a class="nav-link " href="/" >Home</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="/profile" onclick="nav('profile')" id="profile">Profile</a>
+    <a class="nav-link" href="/profile" >Profilo</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link " href="/" onclick="nav('ex1')" id="ex1" >Ex1</a>
+    <a class="nav-link " href="/allbook" >Prenotazioni</a>
   </li>
 </ul>
 </div>
@@ -36,50 +36,6 @@
 
 </header>
 
-<script>
-
-  document.getElementById("home").classList.remove("active");
-  document.getElementById("profile").classList.remove("active");
-  document.getElementById("ex1").classList.remove("active");
-
-  document.getElementById("home").classList.remove("disabled");
-  document.getElementById("profile").classList.remove("disabled");
-  document.getElementById("ex1").classList.remove("disabled");
-
-  var element = getCookie("page")
-  if(element != null){
-    document.getElementById(element).classList.add("disabled");
-    document.getElementById(element).classList.add("active");
-  }
-
-function nav(element){
-    setCookie("page", element, 100000);
-}
-
-
-function setCookie(cname, cvalue, exdays) {
-  var d = new Date();
-  d.setTime(d.getTime() + (exdays*24*60*60*1000));
-  var expires = "expires="+ d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-
-function getCookie(cname) {
-  var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i <ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
-</script>
 
 
         <h1>{% block title %}{% endblock %}</h1>

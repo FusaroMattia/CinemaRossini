@@ -70,3 +70,24 @@ def booking():
        finally:
           conn.close()
           return render_template('booking.html',error = error)
+
+
+
+
+@client.route('/allbook')
+#@roles_required('Cliente')
+def allbook():
+    if current_user.gestore == 0 :
+        id = current_user.get_id()
+        conn = engine.connect()
+        query = "SELECT s.nome, f.titolo, p.data, p.ora, a.posti FROM acquisti a JOIN proiezioni p ON(a.proiezione =  p.idproiezione) JOIN sale s ON(p.sala = s.nsala) JOIN film f ON(p.film = f.codfilm) WHERE a.utente = "+str(id)
+        result = conn.execute(query)
+        print(result)
+        proiezioni = []
+        for n in result:
+            local = [n[0],n[1],n[2],n[3],n[4]]
+            print(n[0])
+            proiezioni.append(local)
+
+        conn.close()
+        return render_template('allbook.html',proiezioni = proiezioni )

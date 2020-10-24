@@ -10,11 +10,13 @@ engine = create_engine("postgresql+psycopg2://cliente:ciao@localhost/rossini")
 
 @main.route('/')
 def index():
-    query = "SELECT * FROM proiezioni WHERE data = CURRENT_DATE ORDER BY data  DESC, ora ASC"
-    cursor.execute(query)
-    results = cursor.fetchmany(12)
-    titoli = []
-    sale = []
+    conn = engine.connect()
+
+    query = "SELECT * FROM proiezioni  ORDER BY data  DESC, ora ASC"
+    results = conn.execute(query)
+
+    proiezioni = []
+
     for n in results:
         proiezioni_nsala = n[1]
         proiezioni_codfilm = n[2]
@@ -61,59 +63,63 @@ def profile():
 @main.route('/film' , methods=['POST'])
 #@roles_required('Cliente')
 def film():
-    if current_user.gestore == 0 and request.method == "POST" :
+    if current_user.gestore == 0 and request.method == "POST" and request.form.get('film'):
        film = request.form.get('film')
-       query = "SELECT * FROM film WHERE codfilm = "+str(film)
-       cursor.execute(query)
-       nome_film = cursor.fetchone()
+
+       conn = engine.connect()
+       if film.isnumeric():
+           query = "SELECT * FROM film WHERE codfilm = "+str(film)
+       else:
+           query = "SELECT * FROM film WHERE titolo = '"+str(film)+"'"
+       result = conn.execute(query)
+       record_film = result.fetchone()
 
        #creo un array con tutti i nomi dei generi che asso poi all HTML
-       generi = nome_film[4]
-       query = "SELECT * FROM generi WHERE idgeneri = "+str(generi)
-       cursor.execute(query)
-       id_generi = cursor.fetchone()
+       generi_id = record_film[4]
+       query = "SELECT * FROM generi WHERE idgeneri = "+str(generi_id)
+       result = conn.execute(query)
+       id_generi = result.fetchone()
        id_genere1 = id_generi[1]
        id_genere2 = id_generi[2]
        id_genere3 = id_generi[3]
        generi = [id_genere1, id_genere2, id_genere3]
-       nomi_generi=[]
 
+       nomi_generi=[]
        for n in generi :
            if n :
                query= "SELECT titolo FROM genere WHERE idgenere = "+str(n)
-               cursor.execute(query)
-               genere = cursor.fetchone()
+               result = conn.execute(query)
+               genere = result.fetchone()
                nome=genere[0]
                nomi_generi.append(nome)
 
        #Attori
-       nome
-       id_attore = nome_film[2]
+       id_attore = record_film[2]
        query = "SELECT * FROM attori WHERE idattori = "+str(id_attore)
-       cursor.execute(query)
-       query_attore = cursor.fetchone()
+       result = conn.execute(query)
+       query_attore = result.fetchone()
        nome_attore = query_attore[1]
        cognome_attore = query_attore[2]
        attore = [nome_attore, cognome_attore]
 
        #proiezioni
-       query = "SELECT * FROM proiezioni WHERE film = " +str(nome_film[0])+ "ORDER BY data  DESC, ora ASC"
-       cursor.execute(query)
-       query_proiezione = cursor.fetchmany(12)
+       id_film = record_film[0]
+       query = "SELECT * FROM proiezioni WHERE film = " +str(id_film)+ "ORDER BY data  DESC, ora ASC"
+       result = conn.execute(query)
 
-       sale = []
-       for n in query_proiezione:
+       tabella = []
+       for n in result:
            sala = n[1]
-           query = "SELECT nome FROM sale WHERE sale.NSala = "+str(sala)
-           cursor.execute(query)
-           nome_sala = cursor.fetchone()
-           sale.extend(nome_sala)
+           query = "SELECT nome FROM sale WHERE nsala = "+str(sala)
+           local = conn.execute(query)
+           nome_sala = local.fetchone()
+           local_proiezioni = [nome_sala[0], n[3] , n[4] , n[5] , n[6]]
+           tabella.append(local_proiezioni)
 
 
 
-       results = conn.execute(query)
-       record_film = results.fetchone()
-
-       return render_template('film.html', film = nome_film, generi = nomi_generi, attore = attore, tabella = query_proiezione, sale = sale)
+       nome_film =  [id_film,record_film[1],id_attore,record_film[3],generi_id,record_film[5]]
+       conn.close()
+       return render_template('film.html', film = nome_film, generi = nomi_generi, attore = attore, tabella = tabella)
     else:
        return redirect(url_for('main.index'))

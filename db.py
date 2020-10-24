@@ -151,12 +151,13 @@ conn.execute("INSERT INTO attori(nome,cognome,genere,stato,data_nascita,descr) V
 #FILM
 conn.execute("INSERT INTO film(titolo,autore,durata,generi,lingua_originale) VALUES('Io sono leggenda','1','145','1','1')" )
 conn.execute("INSERT INTO film(titolo,autore,durata,generi,lingua_originale) VALUES('Transformers','1','200','1','1') ")
+conn.execute("INSERT INTO film(titolo,autore,durata,generi,lingua_originale) VALUES('Alba','1','245','1','1') ")
 
 #PROIEZIONI
 conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','20:00:00','100','0') ")
-conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','22:00:00','100','0') ")
-conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','18:00:00','100','0') ")
-conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-23','16:00:00','100','0') ")
+conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('2','2','2020-10-15','22:00:00','200','0') ")
+conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('3','3','2020-10-15','18:00:00','50','0') ")
+conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('4','3','2020-10-15','16:00:00','120','0') ")
 
 
 #ACQUISTI
@@ -202,17 +203,17 @@ conn.execute("GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO gestore")
 conn.execute("GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO gestore")
 
 
-conn.execute("GRANT SELECT ON film TO PUBLIC; GRANT SELECT ON proiezioni TO PUBLIC; GRANT SELECT ON sale TO PUBLIC; GRANT SELECT ON acquisti TO gestore; GRANT SELECT ON utenti TO PUBLIC; GRANT SELECT ON attori TO gestore; GRANT SELECT ON generi TO gestore WITH GRANT OPTION; GRANT SELECT ON genere TO gestore WITH GRANT OPTION;")
+conn.execute("GRANT SELECT ON film TO PUBLIC; GRANT SELECT ON proiezioni TO PUBLIC; GRANT SELECT ON sale TO PUBLIC; GRANT SELECT ON acquisti TO gestore; GRANT SELECT ON utenti TO PUBLIC; GRANT SELECT ON attori TO PUBLIC; GRANT SELECT ON generi TO PUBLIC; GRANT SELECT ON genere TO PUBLIC;")
 
 #INSERT
-conn.execute("GRANT INSERT ON genere TO gestore WITH GRANT OPTION; GRANT INSERT ON generi TO gestore WITH GRANT OPTION; GRANT INSERT ON attori TO gestore; GRANT INSERT ON film TO gestore; GRANT INSERT ON sale TO gestore; GRANT INSERT ON proiezioni TO gestore;")
+conn.execute("GRANT INSERT ON genere TO gestore; GRANT INSERT ON generi TO gestore; GRANT INSERT ON attori TO gestore; GRANT INSERT ON film TO gestore; GRANT INSERT ON sale TO gestore; GRANT INSERT ON proiezioni TO gestore;")
 conn.execute("GRANT INSERT ON acquisti TO cliente; ")
 
 #UPDATE
-conn.execute("GRANT UPDATE ON genere TO gestore WITH GRANT OPTION; GRANT UPDATE ON generi TO gestore WITH GRANT OPTION; GRANT UPDATE ON attori TO gestore; GRANT UPDATE ON film TO gestore; GRANT UPDATE ON sale TO gestore; GRANT UPDATE ON proiezioni TO gestore; GRANT UPDATE ON acquisti TO gestore; GRANT UPDATE ON utenti TO gestore;")
+conn.execute("GRANT UPDATE ON genere TO gestore; GRANT UPDATE ON generi TO gestore; GRANT UPDATE ON attori TO gestore; GRANT UPDATE ON film TO gestore; GRANT UPDATE ON sale TO gestore; GRANT UPDATE ON proiezioni TO gestore; GRANT UPDATE ON acquisti TO gestore; GRANT UPDATE ON utenti TO gestore;")
 conn.execute("GRANT UPDATE ON proiezioni TO cliente;")
 #DELETE
-conn.execute("GRANT DELETE ON genere TO gestore WITH GRANT OPTION; GRANT DELETE ON generi TO gestore WITH GRANT OPTION; GRANT DELETE ON utenti TO gestore; GRANT DELETE ON attori TO gestore; GRANT DELETE ON film TO gestore; GRANT DELETE ON sale TO gestore; GRANT DELETE ON proiezioni TO gestore; GRANT DELETE ON acquisti TO gestore;")
+conn.execute("GRANT DELETE ON genere TO gestore; GRANT DELETE ON generi TO gestore; GRANT DELETE ON utenti TO gestore; GRANT DELETE ON attori TO gestore; GRANT DELETE ON film TO gestore; GRANT DELETE ON sale TO gestore; GRANT DELETE ON proiezioni TO gestore; GRANT DELETE ON acquisti TO gestore;")
 conn.execute("GRANT DELETE ON acquisti TO cliente;")
 
 
