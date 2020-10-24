@@ -83,13 +83,21 @@ def film():
        attore = [nome_attore, cognome_attore]
 
        #proiezioni
-       query = "SELECT * FROM proiezioni WHERE film = " +str(nome_film[0])+" AND data = CURRENT_DATE ORDER BY data  DESC, ora ASC"
+       query = "SELECT * FROM proiezioni WHERE film = " +str(nome_film[0])+ "ORDER BY data  DESC, ora ASC"
        cursor.execute(query)
-       query_proiezione = cursor.fetchmany()
+       query_proiezione = cursor.fetchmany(12)
+
+       sale = []
+       for n in query_proiezione:
+           sala = n[1]
+           query = "SELECT nome FROM sale WHERE sale.NSala = "+str(sala)
+           cursor.execute(query)
+           nome_sala = cursor.fetchone()
+           sale.extend(nome_sala)
 
 
 
 
-       return render_template('film.html', film = nome_film, generi = nomi_generi, attore = attore, tabella = query_proiezione)
+       return render_template('film.html', film = nome_film, generi = nomi_generi, attore = attore, tabella = query_proiezione, sale = sale)
     else:
        return redirect(url_for('main.index'))
