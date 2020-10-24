@@ -156,7 +156,7 @@ conn.execute("INSERT INTO film(titolo,autore,durata,generi,lingua_originale) VAL
 conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','20:00:00','100','0') ")
 conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','22:00:00','100','0') ")
 conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','18:00:00','100','0') ")
-conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','16:00:00','100','0') ")
+conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-23','16:00:00','100','0') ")
 
 
 #ACQUISTI
