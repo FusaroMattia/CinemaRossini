@@ -167,17 +167,18 @@ def addevent():
 #@roles_required('Gestore')
 def statistic():
     if current_user.is_authenticated and current_user.gestore == 1:
-        #se risultati molti:
-        #film = conn.execute(query)
-        #film_html = []
-        #for row in film:
-        #    local_film = [ [row[0],row[1]] ]   QUI METTI TUTTI I CAMPI CHE TI SERVONO
-        #    film_html.extend(local_film)
-        #se un solo risultato:
-        #   result = conn.execute(query)
-        #   sale_row = result.fetchone()
-        #   n_posti = sale_row[2]
 
-        return 0
+        conn = engine.connect()
+        query= "SELECT f.titolo, SUM(v.incasso) AS incasso FROM prezzi_sala_mat v JOIN film f ON (v.film = f.codfilm) GROUP by v.film, f.titolo"
+        film = conn.execute(query)
+        film_html = []
+        for row in film:
+            local_film = [ [row[0], row[1]] ]
+            film_html.extend(local_film)
+
+
+
+        return render_template('statistic.html',tot = film_html)
+
 
     return 0

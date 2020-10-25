@@ -91,7 +91,9 @@ acquisti = Table('acquisti', metadata,Column('id',Integer, primary_key = True),
 metadata.create_all(engine)
 
 conn = engine.connect()
-
+conn.execute("CREATE MATERIALIZED VIEW prezzi_sala_mat (film, incasso) AS SELECT f.codfilm, SUM(p.posti_occupati)*s.prezzo_posti AS incasso FROM proiezioni p JOIN film f ON (p.film = f.codfilm) JOIN sale s ON(p.sala = s.nsala) GROUP BY s.nsala, f.codfilm")
+conn.execute("CREATE OR REPLACE FUNCTION REFRESH_PREZZI_SALA_MAT() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN REFRESH MATERIALIZED VIEW CONCURRENTLY prezzi_sala_mat; RETURN NULL; END; $$;")
+conn.execute("CREATE TRIGGER REFRESH_PREZZI_SALA_MAT AFTER INSERT OR UPDATE OR DELETE ON acquisti FOR EACH STATEMENT EXECUTE PROCEDURE REFRESH_PREZZI_SALA_MAT();")
 conn.execute("ALTER TABLE acquisti ADD CONSTRAINT posto_unico UNIQUE (proiezione, posti);")
 
 
@@ -206,6 +208,7 @@ conn.execute("GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO gestore")
 conn.execute("GRANT SELECT ON film TO gestore; GRANT SELECT ON proiezioni TO gestore; GRANT SELECT ON sale TO gestore; GRANT SELECT ON acquisti TO gestore; GRANT SELECT ON utenti TO gestore; GRANT SELECT ON attori TO gestore; GRANT SELECT ON generi TO gestore; GRANT SELECT ON genere TO gestore;")
 conn.execute("GRANT SELECT ON film TO cliente; GRANT SELECT ON proiezioni TO cliente; GRANT SELECT ON sale TO cliente; GRANT SELECT ON acquisti TO cliente; GRANT SELECT ON utenti TO cliente; GRANT SELECT ON attori TO cliente; GRANT SELECT ON generi TO cliente; GRANT SELECT ON genere TO cliente;")
 
+conn.execute("GRANT SELECT ON prezzi_sala_mat TO gestore; GRANT EXECUTE ON FUNCTION public.refresh_prezzi_sala_mat() TO cliente")
 conn.execute("GRANT SELECT ON SEQUENCE public.attori_idattori_seq TO cliente;GRANT UPDATE ON SEQUENCE public.acquisti_id_seq TO cliente;GRANT SELECT ON SEQUENCE public.acquisti_id_seq TO cliente;GRANT USAGE ON SEQUENCE public.acquisti_id_seq TO cliente;")
 #INSERT
 conn.execute("GRANT INSERT ON genere TO gestore; GRANT INSERT ON generi TO gestore; GRANT INSERT ON attori TO gestore; GRANT INSERT ON film TO gestore; GRANT INSERT ON sale TO gestore; GRANT INSERT ON proiezioni TO gestore;")

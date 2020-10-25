@@ -15,7 +15,7 @@ def index():
     conn = engine.connect()
     trans = conn.begin()
     try:
-        query_proiezioni = "SELECT p.idproiezione, p.sala, p.film, s.nome, f.titolo, p.data, p.ora, p.posti_liberi, p.posti_occupati FROM proiezioni p  JOIN sale s ON(p.sala = s.nsala) JOIN film f ON(p.film = f.codfilm) WHERE p.data  = DATE(NOW()) ORDER BY data  DESC, ora ASC "
+        query_proiezioni = "SELECT p.idproiezione, p.sala, p.film, s.nome, f.titolo, p.data, p.ora, p.posti_liberi, p.posti_occupati FROM proiezioni p  JOIN sale s ON(p.sala = s.nsala) JOIN film f ON(p.film = f.codfilm) ORDER BY data  DESC, ora ASC "
         risultati = conn.execute(query_proiezioni)
 
         for n in risultati:

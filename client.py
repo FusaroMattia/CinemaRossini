@@ -67,7 +67,8 @@ def booking():
                    conn.execute(query_update_proiezioni)
 
            trans.commit()
-       except:
+       except Exception as e:
+           print(e)
            trans.rollback()
            print("rollback booking")
        finally:
