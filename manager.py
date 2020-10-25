@@ -41,14 +41,12 @@ def addfilm_post():
            result = conn.execute(query)
            new_id = result.fetchone()
            id_generi = new_id[0]
-           print("ok1")
            query = "INSERT INTO film(titolo,autore,durata,generi,lingua_originale) VALUES('"+str(titolo_film)+"','"+str(autore_film)+"','"+str(durata_film)+"','"+str(id_generi)+"','"+str(lingua_originale_film)+"')"
            conn.execute(query)
-           print("ok2")
            trans.commit()
        except:
               trans.rollback()
-              print("rollback")
+              print("rollback addfilm")
        conn.close()
     return redirect(url_for("main.index"))
 
@@ -74,6 +72,50 @@ def addfilm():
         return render_template('addfilm.html',generi=generi_html,registi=registi_html)
     else:
         return redirect(url_for("main.profile"))
+
+@manager.route('/addauthor', )
+#@roles_required('Gestore')
+def addauthor():
+    if current_user.is_authenticated and current_user.gestore == 1  :
+        conn = engine.connect()
+        query = "SELECT idgenere,titolo FROM genere  ORDER BY idgenere  ASC"
+        generi = conn.execute(query)
+        generi_html = []
+        for row in generi:
+            local_generi = [ [row[0],row[1]] ]
+            generi_html.extend(local_generi)
+        conn.close()
+        return render_template('addauthor.html',generi = generi_html)
+    else:
+        return redirect(url_for("main.index"))
+
+@manager.route('/addauthor',  methods=['POST'])
+#@roles_required('Gestore')
+def addauthor_post():
+    if current_user.gestore == 1 and request.method == "POST" :
+        nome_autore = request.form.get('nome')
+        cognome_autore = request.form.get('cognome')
+        genere_autore = request.form.get('genere')
+        stato_autore = request.form.get('stato')
+        data_nascita_autore = request.form.get('data_nascita')
+        descr_autore = request.form.get('descr')
+        conn = engine.connect()
+        trans = conn.begin()
+        try:
+            query_attori = "INSERT INTO attori(nome,cognome,genere,stato,data_nascita,descr) VALUES('"+str(nome_autore)+"','"+str(cognome_autore)+"','"+str(genere_autore)+"','"+str(stato_autore)+"','"+str(data_nascita_autore)+"','"+str(descr_autore)+"') "
+            conn.execute(query_attori)
+            trans.commit()
+        except:
+            trans.rollback()
+            print("rollback addauthor")
+
+        finally:
+            conn.close()
+            return redirect(url_for("main.index"))
+    else:
+        return redirect(url_for("main.index"))
+
+
 
 @manager.route('/addevent',  methods=['POST'] )
 #@roles_required('Gestore')

@@ -6,32 +6,36 @@ from flask_user import login_required,UserManager, UserMixin, SQLAlchemyAdapter,
 import sqlite3
 
 client = Blueprint('client', __name__)
-engine = create_engine("postgresql+psycopg2://admin:admin@localhost/rossini")
+engine = create_engine("postgresql+psycopg2://cliente:ciao@localhost/rossini")
 
 
 @client.route('/choosesit',  methods=['POST'])
 #@roles_required('Cliente')
 def choosesit():
-    if current_user.gestore ==0 and request.method == "POST" :
+    if current_user.gestore == 0 and request.method == "POST" :
        id_proiezione = request.form.get('proiezione')
        lista_posti_occupati = 0;
        conn = engine.connect()
        trans = conn.begin()
        try:
-           query = "SELECT * FROM proiezioni WHERE idproiezione ="+str(id_proiezione)
-           result = conn.execute(query)
-           pro_row = result.fetchone()
-           posti_liberi = pro_row[5]
-           posti_occupati = pro_row[6]
-           print(id_proiezione)
-           query = "SELECT * FROM acquisti WHERE proiezione ="+str(id_proiezione)
-           posti = conn.execute(query)
-           num_results = posti.rowcount
-           if int(num_results) == 0:
+
+           query_proiezioni = "SELECT * FROM proiezioni WHERE idproiezione ="+str(id_proiezione)
+           risultato = conn.execute(query_proiezioni)
+           record_proiezione = risultato.fetchone()
+
+           posti_liberi = record_proiezione[5]
+           posti_occupati = record_proiezione[6]
+
+
+           query_acquisti = "SELECT * FROM acquisti WHERE proiezione ="+str(id_proiezione)
+           records_posti = conn.execute(query_acquisti)
+           num_record = records_posti.rowcount
+
+           if int(num_record) == 0:
                lista_posti_occupati = 0
            else:
                lista_posti_occupati = []
-               for row in posti:
+               for row in records_posti:
                    lista_posti_occupati.extend( [ row[3] ])
            trans.commit()
        except:
@@ -48,28 +52,27 @@ def booking():
     if current_user.gestore == 0 and request.method == "POST" :
        posti_tot = int(request.form.get('postitot'))
        id_proiezione = request.form.get('proiezione')
-       error = "none";
        conn = engine.connect()
        trans = conn.begin()
        try:
            for x in range(1, posti_tot + 1 ):
-               string = "posto"+str(x)
-               posti_local = request.form.get(string)
-               id = current_user.get_id()
-               if posti_local and posti_local != 0 :
-                    query = "INSERT INTO acquisti(utente,proiezione,posti) VALUES('"+ str(id) +"','"+ str(id_proiezione) +"', '"+ str(posti_local) +"') "
-                    conn.execute(query)
-                    query = "UPDATE proiezioni SET posti_liberi = posti_liberi-1, posti_occupati = posti_occupati+1  WHERE idproiezione ="+str(id_proiezione)
-                    conn.execute(query)
+               string_posto_request = "posto"+str(x)
+               posto_request= request.form.get(string_posto_request)
+               id_utente = current_user.get_id()
+               if posto_request and posto_request != 0 :
+                   query_insert_acquisti = "INSERT INTO acquisti(utente,proiezione,posti) VALUES('"+ str(id_utente) +"','"+ str(id_proiezione) +"', '"+ str(posto_request) +"') "
+                   conn.execute(query_insert_acquisti)
+                   
+                   query_update_proiezioni = "UPDATE proiezioni SET posti_liberi = posti_liberi-1, posti_occupati = posti_occupati+1  WHERE idproiezione ="+str(id_proiezione)
+                   conn.execute(query_update_proiezioni)
 
            trans.commit()
        except:
            trans.rollback()
            print("rollback booking")
-           error = "rollback"
        finally:
-          conn.close()
-          return render_template('booking.html',error = error)
+           conn.close()
+           return render_template('booking.html')
 
 
 
@@ -79,15 +82,20 @@ def booking():
 def allbook():
     if current_user.gestore == 0 :
         id = current_user.get_id()
-        conn = engine.connect()
-        query = "SELECT s.nome, f.titolo, p.data, p.ora, a.posti FROM acquisti a JOIN proiezioni p ON(a.proiezione =  p.idproiezione) JOIN sale s ON(p.sala = s.nsala) JOIN film f ON(p.film = f.codfilm) WHERE a.utente = "+str(id)
-        result = conn.execute(query)
-        print(result)
         proiezioni = []
-        for n in result:
-            local = [n[0],n[1],n[2],n[3],n[4]]
-            print(n[0])
-            proiezioni.append(local)
+        conn = engine.connect()
+        trans = conn.begin()
 
-        conn.close()
-        return render_template('allbook.html',proiezioni = proiezioni )
+        try:
+            query_acquisti = "SELECT s.nome, f.titolo, p.data, p.ora, a.posti,a.id FROM acquisti a JOIN proiezioni p ON(a.proiezione =  p.idproiezione) JOIN sale s ON(p.sala = s.nsala) JOIN film f ON(p.film = f.codfilm) WHERE a.utente = "+str(id)
+            result = conn.execute(query_acquisti)
+            for n in result:
+                local = [n[0],n[1],n[2],n[3],n[4],n[5]]
+                proiezioni.append(local)
+            trans.commit()
+        except:
+            trans.rollback()
+            print("rollback allbook")
+        finally:
+            conn.close()
+            return render_template('allbook.html',proiezioni = proiezioni )

@@ -203,8 +203,10 @@ conn.execute("GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO gestore")
 conn.execute("GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO gestore")
 
 
-conn.execute("GRANT SELECT ON film TO PUBLIC; GRANT SELECT ON proiezioni TO PUBLIC; GRANT SELECT ON sale TO PUBLIC; GRANT SELECT ON acquisti TO gestore; GRANT SELECT ON utenti TO PUBLIC; GRANT SELECT ON attori TO PUBLIC; GRANT SELECT ON generi TO PUBLIC; GRANT SELECT ON genere TO PUBLIC;")
+conn.execute("GRANT SELECT ON film TO gestore; GRANT SELECT ON proiezioni TO gestore; GRANT SELECT ON sale TO gestore; GRANT SELECT ON acquisti TO gestore; GRANT SELECT ON utenti TO gestore; GRANT SELECT ON attori TO gestore; GRANT SELECT ON generi TO gestore; GRANT SELECT ON genere TO gestore;")
+conn.execute("GRANT SELECT ON film TO cliente; GRANT SELECT ON proiezioni TO cliente; GRANT SELECT ON sale TO cliente; GRANT SELECT ON acquisti TO cliente; GRANT SELECT ON utenti TO cliente; GRANT SELECT ON attori TO cliente; GRANT SELECT ON generi TO cliente; GRANT SELECT ON genere TO cliente;")
 
+conn.execute("GRANT SELECT ON SEQUENCE public.attori_idattori_seq TO cliente;GRANT UPDATE ON SEQUENCE public.acquisti_id_seq TO cliente;GRANT SELECT ON SEQUENCE public.acquisti_id_seq TO cliente;GRANT USAGE ON SEQUENCE public.acquisti_id_seq TO cliente;")
 #INSERT
 conn.execute("GRANT INSERT ON genere TO gestore; GRANT INSERT ON generi TO gestore; GRANT INSERT ON attori TO gestore; GRANT INSERT ON film TO gestore; GRANT INSERT ON sale TO gestore; GRANT INSERT ON proiezioni TO gestore;")
 conn.execute("GRANT INSERT ON acquisti TO cliente; ")
@@ -214,7 +216,8 @@ conn.execute("GRANT UPDATE ON genere TO gestore; GRANT UPDATE ON generi TO gesto
 conn.execute("GRANT UPDATE ON proiezioni TO cliente;")
 #DELETE
 conn.execute("GRANT DELETE ON genere TO gestore; GRANT DELETE ON generi TO gestore; GRANT DELETE ON utenti TO gestore; GRANT DELETE ON attori TO gestore; GRANT DELETE ON film TO gestore; GRANT DELETE ON sale TO gestore; GRANT DELETE ON proiezioni TO gestore; GRANT DELETE ON acquisti TO gestore;")
-conn.execute("GRANT DELETE ON acquisti TO cliente;")
+conn.execute("GRANT ALL PRIVILEGES ON TABLE acquisti TO cliente;")
+
 
 
 

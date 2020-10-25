@@ -74,11 +74,11 @@ function onInput(e) {
             <div class="table-data">{{n[3]}}</div>
 
 
-  {% if current_user.is_authenticated:%}
+  {% if current_user.is_authenticated and current_user.gestore == 0:%}
           <div class="table-data">
-          <form action="/film" method="post" id="form">
+          <form action="/film" method="post" id="form_film{{n[2]}}">
           <input type="hidden" type="number" name="film" value="{{n[2]}}">
-          <a href="javascript:{}" onclick="document.getElementById('form').submit(); return false;">{{n[4]}}</a>
+          <a href="javascript:{}" onclick="document.getElementById('form_film{{n[2]}}').submit(); return false;">{{n[4]}}</a>
           </form>
           </div>
   {% else: %}
@@ -94,9 +94,9 @@ function onInput(e) {
 
 
             <div class="table-data">
-            <form action="/choosesit" method="post" id="form{{n[0]}}">
+            <form action="/choosesit" method="post" id="form_sit{{n[0]}}">
             <input type="hidden" name="proiezione" value="{{n[0]}}">
-            <a href="javascript:{}" onclick="document.getElementById('form{{n[0]}}').submit(); return false;">ACQUISTA</a>
+            <a href="javascript:{}" onclick="document.getElementById('form_sit{{n[0]}}').submit(); return false;">ACQUISTA</a>
             </form></div>
 
             {% endif%}

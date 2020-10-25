@@ -11,12 +11,13 @@ var RESERVED = 0;
 var BOUGHT = {{occupati}};
 var OCCUPATI = {{posti_occupati}};
 var TOT = EMPTY + BOUGHT;
-switch (TOT) {
-  case 50: SET = 10;break;
-  case 100: SET = 20;break;
-  case 150: SET = 15;break;
-  case 200: SET = 20;break;
-}
+
+if(TOT > 0 && TOT <= 90) SET = 10;
+else if (TOT%20 == 0) SET = 20;
+else if (TOT%15 == 0) SET = 15;
+else SET = TOT/10;
+
+
 
 
 
