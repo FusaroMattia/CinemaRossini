@@ -15,7 +15,7 @@ def index():
     conn = engine.connect()
     trans = conn.begin()
     try:
-        query_proiezioni = "SELECT p.idproiezione, p.sala, p.film, s.nome, f.titolo, p.data, p.ora, p.posti_liberi, p.posti_occupati FROM proiezioni p  JOIN sale s ON(p.sala = s.nsala) JOIN film f ON(p.film = f.codfilm) ORDER BY data  DESC, ora ASC"
+        query_proiezioni = "SELECT p.idproiezione, p.sala, p.film, s.nome, f.titolo, p.data, p.ora, p.posti_liberi, p.posti_occupati FROM proiezioni p  JOIN sale s ON(p.sala = s.nsala) JOIN film f ON(p.film = f.codfilm) WHERE p.data  = DATE(NOW()) ORDER BY data  DESC, ora ASC "
         risultati = conn.execute(query_proiezioni)
 
         for n in risultati:
@@ -29,7 +29,8 @@ def index():
             local =   [   x[0], x[1]  ]
             titoli_distinti.append(local)
         trans.commit()
-    except:
+    except Exception as e:
+        print(e)
         trans.rollback()
         print("rollback index")
     finally:
@@ -54,7 +55,7 @@ def profile():
 @main.route('/film' , methods=['POST'])
 #@roles_required('Cliente')
 def film():
-    if current_user.gestore == 0 and request.method == "POST" and request.form.get('film'):
+    if request.method == "POST" and request.form.get('film'):
        film = request.form.get('film')
 
        conn = engine.connect()

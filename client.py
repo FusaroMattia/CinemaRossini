@@ -62,7 +62,7 @@ def booking():
                if posto_request and posto_request != 0 :
                    query_insert_acquisti = "INSERT INTO acquisti(utente,proiezione,posti) VALUES('"+ str(id_utente) +"','"+ str(id_proiezione) +"', '"+ str(posto_request) +"') "
                    conn.execute(query_insert_acquisti)
-                   
+
                    query_update_proiezioni = "UPDATE proiezioni SET posti_liberi = posti_liberi-1, posti_occupati = posti_occupati+1  WHERE idproiezione ="+str(id_proiezione)
                    conn.execute(query_update_proiezioni)
 
@@ -79,6 +79,7 @@ def booking():
 
 @client.route('/allbook')
 #@roles_required('Cliente')
+@login_required
 def allbook():
     if current_user.gestore == 0 :
         id = current_user.get_id()

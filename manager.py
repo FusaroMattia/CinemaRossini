@@ -17,23 +17,18 @@ def addfilm_post():
        autore_film = request.form.get('autore')
        durata_film = request.form.get('durata')
        genere_obbligatorio_film = request.form.get('genere1')
-       tot_generi = 1
        genere_opzionale1_film = request.form.get('genere2')
-       if genere_opzionale1_film  != 'empty' :
-           tot_generi = tot_generi+1
-
        genere_opzionale2_film = request.form.get('genere3')
-       if genere_opzionale2_film  != 'empty' :
-           tot_generi = tot_generi + 1
-
        lingua_originale_film = request.form.get('lingua_originale')
+       if not lingua_originale_film:
+           lingua_originale_film = False
 
        conn = engine.connect()
        trans = conn.begin()
        try:
-           if tot_generi == 1:
+           if not genere_opzionale1_film and not genere_opzionale2_film:
                query = "INSERT INTO generi(genere1) VALUES('"+str(genere_obbligatorio_film)+"') RETURNING *"
-           elif tot_generi == 1:
+           elif not genere_opzionale2_film:
                query = "INSERT INTO generi(genere1,genere2) VALUES('"+str(genere_obbligatorio_film)+"','"+str(genere_opzionale1_film)+"') RETURNING *"
            else:
                query = "INSERT INTO generi(genere1,genere2,genere3) VALUES('"+str(genere_obbligatorio_film)+"','"+str(genere_opzionale1_film)+"','"+str(genere_opzionale2_film)+"') RETURNING *"
@@ -44,11 +39,13 @@ def addfilm_post():
            query = "INSERT INTO film(titolo,autore,durata,generi,lingua_originale) VALUES('"+str(titolo_film)+"','"+str(autore_film)+"','"+str(durata_film)+"','"+str(id_generi)+"','"+str(lingua_originale_film)+"')"
            conn.execute(query)
            trans.commit()
-       except:
-              trans.rollback()
-              print("rollback addfilm")
-       conn.close()
-    return redirect(url_for("main.index"))
+       except Exception as e:
+           print(e)
+           trans.rollback()
+           print("rollback addfilm")
+       finally:
+           conn.close()
+           return redirect(url_for("main.index"))
 
 @manager.route('/addfilm')
 #@roles_required('Gestore')
@@ -108,7 +105,6 @@ def addauthor_post():
         except:
             trans.rollback()
             print("rollback addauthor")
-
         finally:
             conn.close()
             return redirect(url_for("main.index"))
