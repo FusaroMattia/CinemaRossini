@@ -3,6 +3,7 @@ from sqlalchemy import create_engine, MetaData , Column,Table,Integer,String,Boo
 from sqlalchemy_utils import create_database, drop_database,database_exists
 
 engine = create_engine("postgresql+psycopg2://admin:admin@localhost/rossini")
+engine_gestore = create_engine("postgresql+psycopg2://gestore:ciao@localhost/rossini")
 
 if not database_exists(engine.url):
     create_database(engine.url)
@@ -90,10 +91,13 @@ acquisti = Table('acquisti', metadata,Column('id',Integer, primary_key = True),
             )
 metadata.create_all(engine)
 
+
+
 conn = engine.connect()
-conn.execute("CREATE MATERIALIZED VIEW prezzi_sala_mat (film, incasso) AS SELECT f.codfilm, SUM(p.posti_occupati)*s.prezzo_posti AS incasso FROM proiezioni p JOIN film f ON (p.film = f.codfilm) JOIN sale s ON(p.sala = s.nsala) GROUP BY s.nsala, f.codfilm")
-conn.execute("CREATE OR REPLACE FUNCTION REFRESH_PREZZI_SALA_MAT() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN REFRESH MATERIALIZED VIEW CONCURRENTLY prezzi_sala_mat; RETURN NULL; END; $$;")
-conn.execute("CREATE TRIGGER REFRESH_PREZZI_SALA_MAT AFTER INSERT OR UPDATE OR DELETE ON acquisti FOR EACH STATEMENT EXECUTE PROCEDURE REFRESH_PREZZI_SALA_MAT();")
+#conn.execute("CREATE OR REPLACE FUNCTION REFRESH_PREZZI_SALA_MAT() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN REFRESH MATERIALIZED VIEW prezzi_sala_mat; RETURN NULL; END; $$;")
+#conn.execute("CREATE TRIGGER REFRESH_PREZZI_SALA_MAT BEFORE INSERT OR UPDATE OR DELETE ON acquisti FOR EACH STATEMENT EXECUTE PROCEDURE REFRESH_PREZZI_SALA_MAT();")
+
+
 conn.execute("ALTER TABLE acquisti ADD CONSTRAINT posto_unico UNIQUE (proiezione, posti);")
 
 
@@ -205,27 +209,36 @@ conn.execute("GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO gestore")
 conn.execute("GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO gestore")
 
 
-conn.execute("GRANT SELECT ON film TO gestore; GRANT SELECT ON proiezioni TO gestore; GRANT SELECT ON sale TO gestore; GRANT SELECT ON acquisti TO gestore; GRANT SELECT ON utenti TO gestore; GRANT SELECT ON attori TO gestore; GRANT SELECT ON generi TO gestore; GRANT SELECT ON genere TO gestore;")
-conn.execute("GRANT SELECT ON film TO cliente; GRANT SELECT ON proiezioni TO cliente; GRANT SELECT ON sale TO cliente; GRANT SELECT ON acquisti TO cliente; GRANT SELECT ON utenti TO cliente; GRANT SELECT ON attori TO cliente; GRANT SELECT ON generi TO cliente; GRANT SELECT ON genere TO cliente;")
+conn.execute("GRANT SELECT ON film, proiezioni, sale, acquisti, utenti ,attori ,generi, genere TO gestore,cliente;")
 
-conn.execute("GRANT SELECT ON prezzi_sala_mat TO gestore; GRANT EXECUTE ON FUNCTION public.refresh_prezzi_sala_mat() TO cliente")
-conn.execute("GRANT SELECT ON SEQUENCE public.attori_idattori_seq TO cliente;GRANT UPDATE ON SEQUENCE public.acquisti_id_seq TO cliente;GRANT SELECT ON SEQUENCE public.acquisti_id_seq TO cliente;GRANT USAGE ON SEQUENCE public.acquisti_id_seq TO cliente;")
+conn.execute("GRANT SELECT ON SEQUENCE public.attori_idattori_seq , public.acquisti_id_seq TO cliente;")
+conn.execute("GRANT UPDATE ON SEQUENCE public.acquisti_id_seq TO cliente;")
+conn.execute("GRANT USAGE ON SEQUENCE public.acquisti_id_seq TO cliente;")
 #INSERT
-conn.execute("GRANT INSERT ON genere TO gestore; GRANT INSERT ON generi TO gestore; GRANT INSERT ON attori TO gestore; GRANT INSERT ON film TO gestore; GRANT INSERT ON sale TO gestore; GRANT INSERT ON proiezioni TO gestore;")
+conn.execute("GRANT INSERT ON genere, generi, attori, film, sale, proiezioni TO gestore;")
 conn.execute("GRANT INSERT ON acquisti TO cliente; ")
 
 #UPDATE
-conn.execute("GRANT UPDATE ON genere TO gestore; GRANT UPDATE ON generi TO gestore; GRANT UPDATE ON attori TO gestore; GRANT UPDATE ON film TO gestore; GRANT UPDATE ON sale TO gestore; GRANT UPDATE ON proiezioni TO gestore; GRANT UPDATE ON acquisti TO gestore; GRANT UPDATE ON utenti TO gestore;")
+conn.execute("GRANT UPDATE ON genere, generi, attori, film, sale, proiezioni, acquisti, utenti TO gestore;")
 conn.execute("GRANT UPDATE ON proiezioni TO cliente;")
 #DELETE
-conn.execute("GRANT DELETE ON genere TO gestore; GRANT DELETE ON generi TO gestore; GRANT DELETE ON utenti TO gestore; GRANT DELETE ON attori TO gestore; GRANT DELETE ON film TO gestore; GRANT DELETE ON sale TO gestore; GRANT DELETE ON proiezioni TO gestore; GRANT DELETE ON acquisti TO gestore;")
+conn.execute("GRANT DELETE ON genere, generi, utenti, attori, film , sale , proiezioni, acquisti TO gestore;")
 conn.execute("GRANT ALL PRIVILEGES ON TABLE acquisti TO cliente;")
 
 
+conn.execute("GRANT REFERENCES ON TABLE proiezioni TO gestore;")
+
+
+#conn.execute("GRANT SELECT ON TABLE public.prezzi_sala_mat TO gestore;")
+#conn.execute("GRANT TRIGGER ON TABLE public.prezzi_sala_mat TO cliente;")
+#conn.execute("GRANT EXECUTE ON FUNCTION public.refresh_prezzi_sala_mat() TO cliente;")
+#conn.execute("GRANT TRIGGER ON TABLE public.prezzi_sala_mat TO cliente;")
 
 
 
 
+conn.close()
 
-
+conn = engine_gestore.connect()
+conn.execute("CREATE MATERIALIZED VIEW prezzi_sala_mat (film, incasso) AS SELECT f.codfilm, SUM(p.posti_occupati)*s.prezzo_posti AS incasso FROM proiezioni p JOIN film f ON (p.film = f.codfilm) JOIN sale s ON(p.sala = s.nsala) GROUP BY s.nsala, f.codfilm")
 conn.close()

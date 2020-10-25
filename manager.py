@@ -169,6 +169,8 @@ def statistic():
     if current_user.is_authenticated and current_user.gestore == 1:
 
         conn = engine.connect()
+        query = "REFRESH MATERIALIZED VIEW prezzi_sala_mat"
+        conn.execute(query)
         query= "SELECT f.titolo, SUM(v.incasso) AS incasso FROM prezzi_sala_mat v JOIN film f ON (v.film = f.codfilm) GROUP by v.film, f.titolo"
         film = conn.execute(query)
         film_html = []
@@ -177,7 +179,7 @@ def statistic():
             film_html.extend(local_film)
 
 
-
+        conn.close()
         return render_template('statistic.html',tot = film_html)
 
 
