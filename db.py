@@ -15,11 +15,6 @@ metadata = MetaData()
 
 
 
-ruolo = Table('ruolo', metadata,Column('id',Integer, primary_key = True),
-                                Column('name',String , nullable = False, unique=True )
-            )
-
-
 utenti = Table('utenti', metadata,Column('id',Integer, primary_key = True),
                                 Column('email',String , nullable = False , unique=True),
                                 Column('password',String , nullable = False ),
@@ -30,14 +25,9 @@ utenti = Table('utenti', metadata,Column('id',Integer, primary_key = True),
                                 Column('data_nascita',DATE , nullable = False ),
                                 Column('sesso',String, nullable = False ) ,
                                 Column('riduzione',Integer , nullable = False ) ,
-                                Column('gestore',Integer , nullable = False ) ,
-                                Column('roles',Integer, ForeignKey('ruoli.id') , nullable = True)
+                                Column('gestore',Integer , nullable = False )
             )
 
-ruoli = Table('ruoli', metadata,Column('id',Integer, primary_key = True),
-                                Column('user_id',Integer , ForeignKey('utenti.id') , nullable = False ),
-                                Column('role_id',Integer , ForeignKey('ruolo.id') ,nullable = False )
-            )
 
 
 
@@ -101,10 +91,7 @@ conn = engine.connect()
 conn.execute("ALTER TABLE acquisti ADD CONSTRAINT posto_unico UNIQUE (proiezione, posti);")
 
 
-#RUOLO
-conn.execute("INSERT INTO ruolo(name) VALUES('Admin') ")
-conn.execute("INSERT INTO ruolo(name) VALUES('Gestore') ")
-conn.execute("INSERT INTO ruolo(name) VALUES('Cliente') ")
+
 
 
 
@@ -113,12 +100,6 @@ conn.execute("INSERT INTO utenti(id,email,password,name,cognome,citta,stato,data
 conn.execute("INSERT INTO utenti(id,email,password,name,cognome,citta,stato,data_nascita,sesso,riduzione,gestore) VALUES('99','mattia@gmail.com','1234','Tia','Fusaro','Venezia','Veneto','1999-09-09','male','0','0')  ")
 
 
-#ruoli
-#conn.execute("INSERT INTO ruoli(id,user_id,role_id) VALUES('0','98','1') ")
-#conn.execute("INSERT INTO ruoli(id,user_id,role_id) VALUES('1','99','2') ")
-
-#conn.execute("UPDATE utenti SET roles = 0 WHERE id = 0")
-#conn.execute("UPDATE utenti SET roles = 1 WHERE id = 1")
 
 #SALE
 conn.execute("INSERT INTO sale(nome,posti_totali,posti_disabili,prezzo_posti) VALUES('Dedalo','100','7','9') ")

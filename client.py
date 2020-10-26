@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, redirect, url_for, request,flash,s
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user, AnonymousUserMixin
 from . import db
 from sqlalchemy import create_engine, text
-from flask_user import login_required,UserManager, UserMixin, SQLAlchemyAdapter,roles_required
 import sqlite3
 
 client = Blueprint('client', __name__)
@@ -10,7 +9,6 @@ engine = create_engine("postgresql+psycopg2://cliente:ciao@localhost/rossini")
 
 
 @client.route('/choosesit',  methods=['POST'])
-#@roles_required('Cliente')
 def choosesit():
     if current_user.gestore == 0 and request.method == "POST" :
        id_proiezione = request.form.get('proiezione')
@@ -44,10 +42,10 @@ def choosesit():
        finally:
            conn.close()
            return render_template('choosesit.html',posti_occupati=lista_posti_occupati,liberi=posti_liberi,occupati=posti_occupati,proiezione=id_proiezione)
-
+    else:
+        return redirect(url_for('main.index'))
 
 @client.route('/booking',  methods=['POST'])
-#@roles_required('Cliente')
 def booking():
     if current_user.gestore == 0 and request.method == "POST" :
        posti_tot = int(request.form.get('postitot'))
@@ -74,12 +72,13 @@ def booking():
        finally:
            conn.close()
            return render_template('booking.html')
+    else:
+        return redirect(url_for('main.index'))
 
 
 
 
 @client.route('/allbook')
-#@roles_required('Cliente')
 @login_required
 def allbook():
     if current_user.gestore == 0 :
@@ -101,3 +100,5 @@ def allbook():
         finally:
             conn.close()
             return render_template('allbook.html',proiezioni = proiezioni )
+    else:
+        return redirect(url_for('main.index'))

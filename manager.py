@@ -10,7 +10,6 @@ engine = create_engine("postgresql+psycopg2://gestore:ciao@localhost/rossini")
 
 
 @manager.route('/addfilm',  methods=['POST'])
-#@roles_required('Gestore')
 def addfilm_post():
     if current_user.gestore == 1 and request.method == "POST" :
        titolo_film = request.form.get('titolo')
@@ -48,7 +47,6 @@ def addfilm_post():
            return redirect(url_for("main.index"))
 
 @manager.route('/addfilm')
-#@roles_required('Gestore')
 def addfilm():
     if current_user.is_authenticated and current_user.gestore == 1 :
         conn = engine.connect()
@@ -71,7 +69,6 @@ def addfilm():
         return redirect(url_for("main.profile"))
 
 @manager.route('/addauthor', )
-#@roles_required('Gestore')
 def addauthor():
     if current_user.is_authenticated and current_user.gestore == 1  :
         conn = engine.connect()
@@ -87,7 +84,6 @@ def addauthor():
         return redirect(url_for("main.index"))
 
 @manager.route('/addauthor',  methods=['POST'])
-#@roles_required('Gestore')
 def addauthor_post():
     if current_user.gestore == 1 and request.method == "POST" :
         nome_autore = request.form.get('nome')
@@ -114,7 +110,6 @@ def addauthor_post():
 
 
 @manager.route('/addevent',  methods=['POST'] )
-#@roles_required('Gestore')
 def addevent_post():
     if current_user.gestore == 1 and request.method == "POST" :
        sala = request.form.get('sala')
@@ -140,7 +135,6 @@ def addevent_post():
 
 
 @manager.route('/addevent')
-#roles_required('Gestore')
 def addevent():
     if current_user.is_authenticated and current_user.gestore == 1:
         conn = engine.connect()
@@ -164,7 +158,6 @@ def addevent():
         return redirect(url_for("main.profile"))
 
 @manager.route('/statistic')
-#@roles_required('Gestore')
 def statistic():
     if current_user.is_authenticated and current_user.gestore == 1:
 

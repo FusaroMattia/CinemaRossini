@@ -53,7 +53,6 @@ def profile():
         return redirect(url_for('auth.login'))
 
 @main.route('/film' , methods=['POST'])
-#@roles_required('Cliente')
 def film():
     if request.method == "POST" and request.form.get('film'):
        film = request.form.get('film')

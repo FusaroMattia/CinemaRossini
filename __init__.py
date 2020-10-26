@@ -2,8 +2,6 @@ from flask import Flask, render_template, redirect, url_for,request,g, request,B
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user, AnonymousUserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine, text
-from flask_user import login_required,UserManager, UserMixin, SQLAlchemyAdapter
-#from datatime import datetime,timedelta
 db = SQLAlchemy()
 
 def create_app():
@@ -24,10 +22,6 @@ def create_app():
 
     from .models import User
 
-    db_adapter = SQLAlchemyAdapter(db,User)
-    user_manager = UserManager(db_adapter,app)
-
-    #from .role import Cliente,Gestore
 
     @login_manager.user_loader
     def load_user(user_id):
