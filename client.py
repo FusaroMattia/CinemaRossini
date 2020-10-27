@@ -153,10 +153,6 @@ def allbook():
             print("rollback allbook")
         finally:
             conn.close()
-            today = date.today()
-            now = datetime.now()
-            d = today.strftime("%Y-%m-%d")
-            time = now.strftime("%H:%M:%S")
             return render_template('allbook.html',proiezioni = proiezioni)
     else:
         return redirect(url_for('main.index'))

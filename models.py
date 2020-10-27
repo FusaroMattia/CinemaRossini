@@ -1,11 +1,14 @@
+# -*- coding: UTF-8 -*-
 from flask_login import UserMixin,AnonymousUserMixin
 from flask_user import UserMixin
 from . import db
 
+# la classe user per sqlalchemy
+# usata per autenticare l'utente e riconscere il suo ruolo
 class User(UserMixin, db.Model):
     __tablename__ = "utenti"
-    __table_args__ = {'extend_existing': True}
-    id = db.Column(db.Integer, primary_key=True) # primary keys are required by SQLAlchemy
+    __table_args__ = {'extend_existing': True}  #estende la tabella gia presente nel db
+    id = db.Column(db.Integer, primary_key=True) # Chiave primaria richiesta da sqlalchemy
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(150))
     name = db.Column(db.String(100))
