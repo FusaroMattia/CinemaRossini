@@ -162,18 +162,53 @@ def statistic():
     if current_user.is_authenticated and current_user.gestore == 1:
 
         conn = engine.connect()
-        query = "REFRESH MATERIALIZED VIEW prezzi_sala_mat"
-        conn.execute(query)
-        query= "SELECT f.titolo, SUM(v.incasso) AS incasso FROM prezzi_sala_mat v JOIN film f ON (v.film = f.codfilm) GROUP by v.film, f.titolo"
-        film = conn.execute(query)
-        film_html = []
-        for row in film:
-            local_film = [ [row[0], row[1]] ]
-            film_html.extend(local_film)
+        trans = conn.begin()
+        try:
+            query_refresh_mv = "REFRESH MATERIALIZED VIEW prezzi_sala_mat"
+            conn.execute(query_refresh_mv)
+            query_incassi_totali_film= "SELECT f.titolo, SUM(v.incasso) AS incasso FROM prezzi_sala_mat v JOIN film f ON (v.film = f.codfilm) GROUP BY v.film, f.titolo"
+            film = conn.execute(query_incassi_totali_film)
+            film_html = []
+            for row in film:
+                local_film = [ [row[0], row[1]] ]
+                film_html.extend(local_film)
 
+            query_refresh_mv = "REFRESH MATERIALIZED VIEW prezzi_generi_mat"
+            conn.execute(query_refresh_mv)
+
+            query_incassi_totali_film= "SELECT v.genere, SUM(v.incasso) AS incasso FROM prezzi_generi_mat v GROUP BY v.genere"
+            generi = conn.execute(query_incassi_totali_film)
+            generi_html = []
+            for row in generi:
+                local_generi = [[row[0], row[1]] ]
+                generi_html.extend(local_generi)
+
+            query_refresh_mv = "REFRESH MATERIALIZED VIEW acquisti_utenti"
+            conn.execute(query_refresh_mv)
+
+            query_male_female= "SELECT u.sesso , SUM(a.acquisti) AS totali FROM acquisti_utenti a JOIN utenti u ON(a.utente = u.id) GROUP BY u.sesso"
+            sex = conn.execute(query_male_female)
+            sex_html = []
+            tot = 0;
+            for row in sex:
+                n_row = int(row[1])
+
+                tot = tot + n_row
+                local_sex = [row[0], n_row]
+                sex_html.append(local_sex)
+
+            for x in sex_html:
+                x[1] = (100 * row[1])/tot
+
+
+            trans.commit()
+        except Exception as e:
+            print(e)
+            trans.rollback()
+            print("rollback")
 
         conn.close()
-        return render_template('statistic.html',tot = film_html)
+        return render_template('statistic.html',tot = film_html, generi = generi_html, sex = sex_html)
 
 
     return 0

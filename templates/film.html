@@ -20,7 +20,10 @@
           <img src="{{url_for('static', filename=film[1]+'.jpg')}}" alt="Mia Immagine" style= "width:400px;height:400px;">
           <h3>{{film[1]}}</h3>
           <br>
-          <h4>Regista</h4>
+          <form action="/author" method="post" id="form_author">
+          <input type="hidden" type="number" name="autore" value="{{film[9]}}">
+          <h4><a href="javascript:{}" onclick="document.getElementById('form_author').submit(); return false;">Regista</a></h4>
+          </form>
                 <p>{{film[2]}} {{film[3]}}</p>
           <p>La durata del film è di {{film[4]}} minuti</p>
           <p>Generi : {{film[5]}}
@@ -44,6 +47,7 @@
                   <div class="header__item">Ora </div>
                   <div class="header__item">Posti Liberi </div>
                   <div class="header__item">Posti Occupati </div>
+                  <div class="header__item">Prenota </div>
           </div>
   <div class="table-content">
   {% for n in tabella %}
@@ -53,6 +57,12 @@
             <div class="table-data">{{n[3] }}</div>
             <div class="table-data">{{n[4] }}</div>
             <div class="table-data">{{n[5] }}</div>
+            <div class="table-data">
+            <form action="/choosesit" method="post" id="form{{n[0]}}">
+            <input type="hidden" type="number" name="proiezione" value="{{n[0]}}">
+            <a href="javascript:{}" onclick="document.getElementById('form{{n[0]}}').submit(); return false;">ACQUISTA</a>
+            </form>
+            </div>
     </div>
   {% endfor  %}
   </div>

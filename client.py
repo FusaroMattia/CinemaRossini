@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, request,flash,s
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user, AnonymousUserMixin
 from . import db
 from sqlalchemy import create_engine, text
-import sqlite3
+from datetime import date, datetime
 
 client = Blueprint('client', __name__)
 engine = create_engine("postgresql+psycopg2://cliente:ciao@localhost/rossini")
@@ -75,7 +75,33 @@ def booking():
     else:
         return redirect(url_for('main.index'))
 
+@client.route('/deletebook',methods=['POST'])
+def deletebook():
+    if current_user.gestore == 0 and request.method == "POST" :
+        id_acquisto = int(request.form.get('acquisto'))
 
+        conn = engine.connect()
+        trans = conn.begin()
+        try:
+            query = "SELECT proiezione FROM acquisti WHERE id = "+str(id_acquisto)
+            result = conn.execute(query)
+            row = result.fetchone()
+            id_proiezione = row[0]
+            query = "DELETE FROM acquisti WHERE id = "+str(id_acquisto)
+            conn.execute(query)
+            query_update_proiezioni = "UPDATE proiezioni SET posti_liberi = posti_liberi+1, posti_occupati = posti_occupati-1  WHERE idproiezione ="+str(id_proiezione)
+            conn.execute(query_update_proiezioni)
+            trans.commit()
+        except Exception as e:
+            print(e)
+            trans.rollback()
+            print("rollback delete")
+        finally:
+            conn.close()
+            return redirect(url_for('client.allbook'))
+
+    else:
+        return redirect(url_for('main.index'))
 
 
 @client.route('/allbook')
@@ -88,17 +114,22 @@ def allbook():
         trans = conn.begin()
 
         try:
-            query_acquisti = "SELECT s.nome, f.titolo, p.data, p.ora, a.posti,a.id FROM acquisti a JOIN proiezioni p ON(a.proiezione =  p.idproiezione) JOIN sale s ON(p.sala = s.nsala) JOIN film f ON(p.film = f.codfilm) WHERE a.utente = "+str(id)
+            query_acquisti = "SELECT s.nome, f.titolo, p.data, p.ora, a.posti,a.id FROM acquisti a JOIN proiezioni p ON(a.proiezione =  p.idproiezione) JOIN sale s ON(p.sala = s.nsala) JOIN film f ON(p.film = f.codfilm) WHERE a.utente = "+str(id)+" ORDER BY a.id DESC"
             result = conn.execute(query_acquisti)
             for n in result:
-                local = [n[0],n[1],n[2],n[3],n[4],n[5]]
+                local = [n[0],n[1],n[2], n[3] ,n[4],n[5]]
                 proiezioni.append(local)
             trans.commit()
-        except:
+        except Exception as e:
+            print(e)
             trans.rollback()
             print("rollback allbook")
         finally:
             conn.close()
-            return render_template('allbook.html',proiezioni = proiezioni )
+            today = date.today()
+            now = datetime.now()
+            d = today.strftime("%Y-%m-%d")
+            time = now.strftime("%H:%M:%S")
+            return render_template('allbook.html',proiezioni = proiezioni)
     else:
         return redirect(url_for('main.index'))

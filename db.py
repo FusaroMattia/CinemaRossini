@@ -89,8 +89,8 @@ conn = engine.connect()
 
 
 conn.execute("ALTER TABLE acquisti ADD CONSTRAINT posto_unico UNIQUE (proiezione, posti);")
-
-
+conn.execute("ALTER TABLE genere ADD CONSTRAINT genere_unico UNIQUE (titolo);")
+conn.execute("ALTER TABLE film ADD CONSTRAINT film_unico UNIQUE (titolo);")
 
 
 
@@ -141,18 +141,18 @@ conn.execute("INSERT INTO film(titolo,autore,durata,generi,lingua_originale) VAL
 conn.execute("INSERT INTO film(titolo,autore,durata,generi,lingua_originale) VALUES('Alba','1','245','1','1') ")
 
 #PROIEZIONI
-conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','20:00:00','100','0') ")
-conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('2','2','2020-10-15','22:00:00','200','0') ")
-conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('3','3','2020-10-15','18:00:00','50','0') ")
-conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('4','3','2020-10-15','16:00:00','120','0') ")
+conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','20:00:00','98','2') ")
+conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('2','2','2020-10-15','22:00:00','199','1') ")
+conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('3','3','2020-10-15','18:00:00','49','1') ")
+conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('4','3','2020-10-15','16:00:00','119','1') ")
 
 
 #ACQUISTI
-#conn.execute('INSERT INTO acquisti("id","utente","proiezione","posti") VALUES("1","1","1","12") ')
-#conn.execute('INSERT INTO acquisti("id","utente","proiezione","posti") VALUES("2","2","1","15") ')
-#conn.execute('INSERT INTO acquisti("id","utente","proiezione","posti") VALUES("3","3","1","18") ')
-
-
+conn.execute("INSERT INTO acquisti(utente,proiezione,posti) VALUES('99','1','12')" )
+conn.execute("INSERT INTO acquisti(utente,proiezione,posti) VALUES('99','1','14') ")
+conn.execute("INSERT INTO acquisti(utente,proiezione,posti) VALUES('99','2','12')" )
+conn.execute("INSERT INTO acquisti(utente,proiezione,posti) VALUES('99','3','12') ")
+conn.execute("INSERT INTO acquisti(utente,proiezione,posti) VALUES('99','4','12')" )
 
 #RUOLI
 role_gestore = "SELECT 1 FROM pg_roles WHERE rolname='gestore'"
@@ -178,36 +178,25 @@ else:
 #conn.execute("CREATE ROLE admin WITH PASSWORD '1234'")
 
 
-#PERMESSI
-#SELECT
+#GESTORE
 conn.execute("GRANT CONNECT ON DATABASE rossini TO gestore")
-conn.execute("GRANT CONNECT ON DATABASE rossini TO cliente")
-
 conn.execute("GRANT USAGE ON SCHEMA public TO gestore")
-conn.execute("GRANT USAGE ON SCHEMA public TO cliente")
-
 conn.execute("GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO gestore")
 conn.execute("GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO gestore")
+conn.execute("GRANT SELECT ON film, proiezioni, sale, acquisti, utenti ,attori ,generi, genere TO gestore;")
+conn.execute("GRANT INSERT ON genere, generi, attori, film, sale, proiezioni TO gestore;")
 
 
-conn.execute("GRANT SELECT ON film, proiezioni, sale, acquisti, utenti ,attori ,generi, genere TO gestore,cliente;")
-
+#CLIENTE
+conn.execute("GRANT CONNECT ON DATABASE rossini TO cliente")
+conn.execute("GRANT USAGE ON SCHEMA public TO cliente")
+conn.execute("GRANT SELECT ON film, proiezioni, sale, acquisti, utenti ,attori ,generi, genere TO cliente;")
+conn.execute("GRANT SELECT,INSERT,DELETE  ON TABLE public.acquisti TO cliente;")
+conn.execute("GRANT UPDATE ON proiezioni TO cliente;")
 conn.execute("GRANT SELECT ON SEQUENCE public.attori_idattori_seq , public.acquisti_id_seq TO cliente;")
 conn.execute("GRANT UPDATE ON SEQUENCE public.acquisti_id_seq TO cliente;")
 conn.execute("GRANT USAGE ON SEQUENCE public.acquisti_id_seq TO cliente;")
-#INSERT
-conn.execute("GRANT INSERT ON genere, generi, attori, film, sale, proiezioni TO gestore;")
-conn.execute("GRANT INSERT ON acquisti TO cliente; ")
-
-#UPDATE
-conn.execute("GRANT UPDATE ON genere, generi, attori, film, sale, proiezioni, acquisti, utenti TO gestore;")
-conn.execute("GRANT UPDATE ON proiezioni TO cliente;")
-#DELETE
-conn.execute("GRANT DELETE ON genere, generi, utenti, attori, film , sale , proiezioni, acquisti TO gestore;")
-conn.execute("GRANT ALL PRIVILEGES ON TABLE acquisti TO cliente;")
-
-
-conn.execute("GRANT REFERENCES ON TABLE proiezioni TO gestore;")
+conn.execute("GRANT REFERENCES ON TABLE proiezioni,utenti TO gestore;")
 
 
 #conn.execute("GRANT SELECT ON TABLE public.prezzi_sala_mat TO gestore;")
@@ -221,5 +210,7 @@ conn.execute("GRANT REFERENCES ON TABLE proiezioni TO gestore;")
 conn.close()
 
 conn = engine_gestore.connect()
-conn.execute("CREATE MATERIALIZED VIEW prezzi_sala_mat (film, incasso) AS SELECT f.codfilm, SUM(p.posti_occupati)*s.prezzo_posti AS incasso FROM proiezioni p JOIN film f ON (p.film = f.codfilm) JOIN sale s ON(p.sala = s.nsala) GROUP BY s.nsala, f.codfilm")
+conn.execute("CREATE MATERIALIZED VIEW prezzi_sala_mat (film, incasso, sala) AS SELECT f.codfilm, SUM(p.posti_occupati)*s.prezzo_posti AS incasso, s.nome FROM proiezioni p JOIN film f ON (p.film = f.codfilm) JOIN sale s ON(p.sala = s.nsala) GROUP BY s.nsala, f.codfilm")
+conn.execute("CREATE MATERIALIZED VIEW prezzi_generi_mat (genere, incasso , sala) AS SELECT g1.titolo, SUM(p.posti_occupati)*s.prezzo_posti, s.nome AS incasso FROM proiezioni p JOIN film f ON (p.film = f.codfilm) JOIN sale s ON(p.sala = s.nsala) JOIN generi g ON(f.generi = g.idgeneri) JOIN genere g1 on (g.genere1 = g1.idgenere) GROUP BY s.nsala, g1.idgenere")
+conn.execute("CREATE MATERIALIZED VIEW acquisti_utenti (utente, acquisti) AS SELECT u.id, COUNT(*) FROM utenti u join acquisti a on (u.id = a.utente) GROUP BY u.id")
 conn.close()

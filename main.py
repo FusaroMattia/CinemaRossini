@@ -61,12 +61,12 @@ def film():
        trans = conn.begin()
        try:
            if film.isnumeric():
-               query = "SELECT f.codfilm, f.titolo, a.nome, a.cognome, f.durata, g1.titolo, g2.titolo , g3.titolo ,f.lingua_originale FROM film f JOIN generi g ON(f.generi = g.idgeneri) JOIN genere g1 ON(g.genere1 = g1.idgenere) LEFT JOIN genere g2 ON(g.genere2 = g2.idgenere) LEFT JOIN genere g3 ON(g.genere3 = g3.idgenere) JOIN attori a ON (a.idattori = f.autore)  WHERE f.codfilm ="+str(film)
+               query = "SELECT f.codfilm, f.titolo, a.nome, a.cognome, f.durata, g1.titolo, g2.titolo , g3.titolo ,f.lingua_originale,a.idattori FROM film f JOIN generi g ON(f.generi = g.idgeneri) JOIN genere g1 ON(g.genere1 = g1.idgenere) LEFT JOIN genere g2 ON(g.genere2 = g2.idgenere) LEFT JOIN genere g3 ON(g.genere3 = g3.idgenere) JOIN attori a ON (a.idattori = f.autore)  WHERE f.codfilm ="+str(film)
            else:
-               query = "SELECT f.codfilm, f.titolo, a.nome, a.cognome, f.durata, g1.titolo, g2.titolo , g3.titolo ,f.lingua_originale FROM film f JOIN generi g ON(f.generi = g.idgeneri) JOIN genere g1 ON(g.genere1 = g1.idgenere) LEFT JOIN genere g2 ON(g.genere2 = g2.idgenere) LEFT JOIN genere g3 ON(g.genere3 = g3.idgenere) JOIN attori a ON (a.idattori = f.autore)  WHERE f.titolo ='"+str(film)+"'"
+               query = "SELECT f.codfilm, f.titolo, a.nome, a.cognome, f.durata, g1.titolo, g2.titolo , g3.titolo ,f.lingua_originale,a.idattori  FROM film f JOIN generi g ON(f.generi = g.idgeneri) JOIN genere g1 ON(g.genere1 = g1.idgenere) LEFT JOIN genere g2 ON(g.genere2 = g2.idgenere) LEFT JOIN genere g3 ON(g.genere3 = g3.idgenere) JOIN attori a ON (a.idattori = f.autore)  WHERE f.titolo ='"+str(film)+"'"
            risultato = conn.execute(query)
            record_film = risultato.fetchone()
-           film = [record_film[0],record_film[1],record_film[2],record_film[3],record_film[4],record_film[5],record_film[6],record_film[7],record_film[8]]
+           film = [record_film[0],record_film[1],record_film[2],record_film[3],record_film[4],record_film[5],record_film[6],record_film[7],record_film[8],record_film[9]]
            query_proiezioni = "SELECT p.idproiezione,s.nome, p.data, p.ora, p.posti_liberi, p.posti_occupati FROM proiezioni p JOIN sale s ON(p.sala = s.nsala) WHERE p.film = " +str(film[0])+ " ORDER BY data  DESC, ora ASC"
            risultati = conn.execute(query_proiezioni)
            tabella = []
@@ -82,3 +82,30 @@ def film():
            return render_template('film.html', film = film, tabella = tabella)
     else:
        return redirect(url_for('main.index'))
+
+@main.route('/author' , methods=['POST'])
+def author():
+    if request.method == "POST" and request.form.get('autore'):
+        autore = request.form.get('autore')
+        autore_html = []
+        conn = engine.connect()
+        trans = conn.begin()
+
+        try:
+            query = " SELECT a.nome, a.cognome, g.titolo, a.stato, a.data_nascita, a.descr FROM attori a JOIN genere g ON (a.genere = g.idgenere) WHERE a.idattori = "+str(autore)
+            risultato = conn.execute(query)
+            record_autore = risultato.fetchone()
+            autore_html = [  record_autore[0],record_autore[1],record_autore[2],record_autore[3],record_autore[4],record_autore[5] ]
+            print(autore_html)
+            trans.commit()
+        except Exception as e:
+            print(e)
+            trans.rollback()
+            print("rollback author")
+
+        finally:
+            conn.close()
+            return render_template('author.html', results=autore_html)
+
+    else:
+        return redirect(url_for('main.index'))

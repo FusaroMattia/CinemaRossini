@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} ACQUISTI {% endblock %}
+{% block title %} REGISTA {% endblock %}
 
 {% block navbar %}
 
@@ -11,41 +11,34 @@
       {% endif%}
 {% endblock %}
 
+
+
+
+
 {% block content %}
-<div class="contenitore">
-       <div class="table">
-          <div class="table-header">
-                  <div class="header__item">Sala </div>
-                  <div class="header__item">Film </div>
-                  <div class="header__item">Data </div>
-                  <div class="header__item">Ora </div>
-                  <div class="header__item">Posto</div>
-                  <div class="header__item">Disdici</div>
-          </div>
-  <div class="table-content">
-  {% for n in proiezioni %}
-        <div class="table-row">
-            <div class="table-data">{{n[0] }}</div>
-            <div class="table-data">{{n[1] }}</div>
-            <div class="table-data">{{n[2] }}</div>
-            <div class="table-data">{{n[3] }}</div>
-            <div class="table-data">{{n[4] }}</div>
-            <div class="table-data">
-            <form action="/deletebook" method="post" id="form_sit{{n[5]}}">
-            <input type="hidden" name="acquisto" value="{{n[5]}}">
-            <a href="javascript:{}" onclick="document.getElementById('form_sit{{n[5]}}').submit(); return false;">Elimina </a>
-            </form>
-          </div>
-    </div>
-  {% endfor  %}
-  </div>
-  </div>
-  </div>
+<div class="film_top">
+
+          <h3>{{results[1]}} {{results[0]}}</h3>
+          <p>Generi : {{results[2]}} </p>
+          <br>
+          <p>Stato : {{results[3]}} </p>
+          <br>
+          <p>Data Nascita : {{results[4]}} </p>
+          <br>
+          <p>Descrizione : {{results[5]}} </p>
+</div>
 
 
 <style>
 *, *:before, *:after {
   box-sizing: border-box;
+}
+.film_top{
+  position: absolute;
+    left: 0%;
+    top: 11vw;
+    width: 100%;
+    text-align: center;
 }
 body {
   padding: 24px;
@@ -59,15 +52,14 @@ h1, h2, h3, h4, h5, h6 {
 
 .contenitore {
   position: absolute;
-    top: 5vw;
-    left: 0vw;
-  margin-right: auto;
-    margin-left: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
+      top: 45vw;
+      left: 0vw;
+      margin-right: auto;
+      margin-left: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
 }
 
 .table {

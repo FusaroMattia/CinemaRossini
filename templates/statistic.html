@@ -3,24 +3,82 @@
 
 {% block content %}
 
+<div class="contenitore4">
+    <form action="/statisticmonth" method="post" id="formsearch">
+      <label class="mdb-main-label">Scegli un mese</label>
+      <select id="mese" name="mese">
+               <option value="1">Gennaio</option>
+               <option value="2">Febbraio</option>
+               <option value="3">Marzo</option>
 
+               <option value="4">Aprile</option>
+               <option value="5">Maggio</option>
+               <option value="6">Giugno</option>
+
+               <option value="7">Luglio</option>
+               <option value="8">Agosto</option>
+               <option value="9">Settembre</option>
+
+               <option value="10">Ottobre</option>
+               <option value="11">Novembre</option>
+               <option value="12">Dicembre</option>
+      </select>
+      <input type="submit" value="Vai">
+    </form>
+
+
+</div>
 <div class="contenitore">
        <div class="table">
           <div class="table-header">
                   <div class="header__item">Nome film </div>
                   <div class="header__item">Incasso totale </div>
-
           </div>
-  <div class="table-content">
-  {% for n in tot %}
-        <div class="table-row">
-            <div class="table-data">{{n[0] }}</div>
-            <div class="table-data">{{n[1]}}</div>
+          <div class="table-content">
+              {% for n in tot %}
+                  <div class="table-row">
+                      <div class="table-data">{{n[0] }}</div>
+                      <div class="table-data">{{n[1]}}</div>
+                  </div>
+              {% endfor  %}
+            </div>
+          </div>
+  </div>
+  <div class="contenitore2">
+         <div class="table">
+            <div class="table-header">
+                    <div class="header__item">Nome genere </div>
+                    <div class="header__item">Percentuale acquisti</div>
+            </div>
+            <div class="table-content">
+                {% for n in sex %}
+                    <div class="table-row">
+                        <div class="table-data">{{n[0] }}</div>
+                        <div class="table-data">{{n[1]}}%</div>
+                    </div>
+                {% endfor  %}
+              </div>
+            </div>
     </div>
-  {% endfor  %}
-  </div>
-  </div>
-  </div>
+
+
+  <div class="contenitore3">
+         <div class="table">
+            <div class="table-header">
+                    <div class="header__item">Nome genere </div>
+                    <div class="header__item">Incasso totale </div>
+
+            </div>
+    <div class="table-content">
+    {% for n in generi %}
+          <div class="table-row">
+              <div class="table-data">{{n[0] }}</div>
+              <div class="table-data">{{n[1]}}</div>
+      </div>
+    {% endfor  %}
+    </div>
+    </div>
+    </div>
 
 
 <style>
@@ -53,9 +111,40 @@ h1, h2, h3, h4, h5, h6 {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 35%;
+      width: 30%;
 }
-
+.contenitore2{
+  position: absolute;
+    top: 20vw;
+    right: 0vw;
+    margin-right: auto;
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30%;
+}
+.contenitore3{
+  position: absolute;
+    top: 20vw;
+    left: 35vw;
+    margin-right: auto;
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30%;
+}
+.contenitore4 {
+  position: absolute;
+      top: 10vw;
+      margin-right: auto;
+      margin-left: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 30%;
+}
 .table {
   width: 100%;
   border: 1px solid #EEEEEE;
