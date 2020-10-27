@@ -202,7 +202,9 @@ def addevent():
 @manager.route('/statistic')
 def statistic():
     if current_user.is_authenticated and current_user.gestore == 1:
-
+        sex_html = []
+        generi_html = []
+        film_html = []
         conn = engine.connect()
         trans = conn.begin()
         try:
@@ -210,7 +212,7 @@ def statistic():
             conn.execute(query_refresh_mv)
             query_incassi_totali_film= "SELECT f.titolo, SUM(v.incasso) AS incasso FROM prezzi_sala_mat v JOIN film f ON (v.film = f.codfilm) GROUP BY v.film, f.titolo"
             film = conn.execute(query_incassi_totali_film)
-            film_html = []
+
             for row in film:
                 local_film = [ [row[0], row[1]] ]
                 film_html.extend(local_film)
@@ -218,9 +220,9 @@ def statistic():
             query_refresh_mv = "REFRESH MATERIALIZED VIEW prezzi_generi_mat"
             conn.execute(query_refresh_mv)
 
-            query_incassi_totali_film= "SELECT v.genere, SUM(v.incasso) AS incasso FROM prezzi_generi_mat v GROUP BY v.genere"
-            generi = conn.execute(query_incassi_totali_film)
-            generi_html = []
+            query_incassi_totali_genere= "SELECT v.genere, SUM(v.incasso) AS incasso FROM prezzi_generi_mat v GROUP BY v.genere"
+            generi = conn.execute(query_incassi_totali_genere)
+
             for row in generi:
                 local_generi = [[row[0], row[1]] ]
                 generi_html.extend(local_generi)
@@ -230,7 +232,7 @@ def statistic():
 
             query_male_female= "SELECT u.sesso , SUM(a.acquisti) AS totali FROM acquisti_utenti a JOIN utenti u ON(a.utente = u.id) GROUP BY u.sesso"
             sex = conn.execute(query_male_female)
-            sex_html = []
+
             tot = 0;
             for row in sex:
                 n_row = int(row[1])
@@ -249,8 +251,58 @@ def statistic():
             trans.rollback()
             print("rollback")
 
-        conn.close()
-        return render_template('statistic.html',tot = film_html, generi = generi_html, sex = sex_html)
+        finally:
+            conn.close()
+            return render_template('statistic.html',tot = film_html, generi = generi_html, sex = sex_html)
 
 
-    return 0
+@manager.route('/statistic',  methods=['POST'] )
+def statistic_post():
+    if request.method == "POST" :
+        mese = request.form.get('mese')
+        inizio_mese = mese +"-01"
+        film_html = []
+        generi_html = []
+        sex_html = []
+
+        conn = engine.connect()
+        trans = conn.begin()
+        try:
+
+            query_incassi_film_mensili = "SELECT f.titolo, SUM(v.incasso) AS incasso FROM prezzi_sala_mat v JOIN film f ON (v.film = f.codfilm) WHERE  v.data >= '"+str(inizio_mese)+"' and v.data < (DATE '"+str(inizio_mese)+"' + INTERVAL '1 mon') GROUP BY v.film, f.titolo"
+            film = conn.execute(query_incassi_film_mensili)
+
+            for row in film:
+                local_film = [ [row[0], row[1]] ]
+                film_html.extend(local_film)
+
+            query_incassi_generi_mensili= "SELECT v.genere, SUM(v.incasso) AS incasso FROM prezzi_generi_mat v WHERE  v.data >= '"+str(inizio_mese)+"' and v.data < (DATE '"+str(inizio_mese)+"' + INTERVAL '1 mon') GROUP BY v.genere"
+            generi = conn.execute(query_incassi_generi_mensili)
+
+            for row in generi:
+                local_generi = [[row[0], row[1]] ]
+                generi_html.extend(local_generi)
+
+            query_male_female= "SELECT u.sesso , SUM(a.acquisti) AS totali FROM acquisti_utenti a JOIN utenti u ON(a.utente = u.id) WHERE  a.data >= '"+str(inizio_mese)+"' and a.data < (DATE '"+str(inizio_mese)+"' + INTERVAL '1 mon') GROUP BY u.sesso"
+            sex = conn.execute(query_male_female)
+
+            tot = 0;
+            for row in sex:
+                n_row = int(row[1])
+
+                tot = tot + n_row
+                local_sex = [row[0], n_row]
+                sex_html.append(local_sex)
+
+            for x in sex_html:
+                x[1] = (100 * row[1])/tot
+
+            trans.commit()
+        except Exception as e:
+            print(e)
+            trans.rollback()
+            print("rollback")
+
+        finally:
+            conn.close()
+            return render_template('statistic.html',tot = film_html, generi = generi_html, sex = sex_html)
