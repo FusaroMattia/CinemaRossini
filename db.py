@@ -141,10 +141,10 @@ conn.execute("INSERT INTO film(titolo,autore,durata,generi,lingua_originale) VAL
 conn.execute("INSERT INTO film(titolo,autore,durata,generi,lingua_originale) VALUES('Alba','1','245','1','1') ")
 
 #PROIEZIONI
-conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1','2020-10-15','20:00:00','98','2') ")
-conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('2','2','2020-10-15','22:00:00','199','1') ")
-conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('3','3','2020-10-15','18:00:00','49','1') ")
-conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('4','3','2020-10-15','16:00:00','119','1') ")
+conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('1','1',DATE(NOW()),'20:00:00','98','2') ")
+conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('2','2',DATE(NOW()),'22:00:00','199','1') ")
+conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('3','3',DATE(NOW()),'18:00:00','49','1') ")
+conn.execute("INSERT INTO proiezioni(sala,film,data,ora,posti_liberi,posti_occupati) VALUES('4','3',DATE(NOW()),'16:00:00','119','1') ")
 
 
 #ACQUISTI

@@ -31,10 +31,15 @@
             <div class="table-data">{{n[3] }}</div>
             <div class="table-data">{{n[4] }}</div>
             <div class="table-data">
+              {% if not n[6]: %}
             <form action="/deletebook" method="post" id="form_sit{{n[5]}}">
             <input type="hidden" name="acquisto" value="{{n[5]}}">
             <a href="javascript:{}" onclick="document.getElementById('form_sit{{n[5]}}').submit(); return false;">Elimina </a>
             </form>
+            {% else:%}
+
+            <div class="table-data">Non eliminabile</div>
+            {% endif %}
           </div>
     </div>
   {% endfor  %}
