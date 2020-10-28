@@ -4,30 +4,18 @@
 {% block content %}
 
 <div class="contenitore4">
-    <form action="/statisticmonth" method="post" id="formsearch">
+    <form action="/statistic" method="post" id="formsearch">
       <label class="mdb-main-label">Scegli un mese</label>
-      <select id="mese" name="mese">
-               <option value="1">Gennaio</option>
-               <option value="2">Febbraio</option>
-               <option value="3">Marzo</option>
-
-               <option value="4">Aprile</option>
-               <option value="5">Maggio</option>
-               <option value="6">Giugno</option>
-
-               <option value="7">Luglio</option>
-               <option value="8">Agosto</option>
-               <option value="9">Settembre</option>
-
-               <option value="10">Ottobre</option>
-               <option value="11">Novembre</option>
-               <option value="12">Dicembre</option>
-      </select>
+        <input type="month" name="mese" min="2020-01" value="2021-01">
       <input type="submit" value="Vai">
     </form>
-
-
 </div>
+
+<div class="contenitore5">
+    <h2> <a href="/statistic" > Torna alle totali </a> </h2>
+</div>
+
+
 <div class="contenitore">
        <div class="table">
           <div class="table-header">
